@@ -69,7 +69,13 @@ export default function App() {
       <Header onSearch={onSearch} onNav={onNav} activePage={activePage} />
 
       {view.type === "home" && (
-        <HomePage onMovieClick={onMovieClick} onActorClick={onActorClick} />
+        <HomePage
+          key={`home-${navTick}`}
+          onMovieClick={onMovieClick}
+          onActorClick={onActorClick}
+          subTab={homeSubTab}
+          scrollTarget={homeScroll}
+        />
       )}
 
       {view.type === "movie" && (
