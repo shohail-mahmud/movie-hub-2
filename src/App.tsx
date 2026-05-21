@@ -52,7 +52,7 @@ export default function App() {
   const onSearch = (query: string) => navigate({ type: "search", query });
   const onNav = (page: string) => {
     const cfg = navMap[page] ?? {};
-    setHomeSubTab(cfg.sub ? `${cfg.sub}__${navTick}` : undefined);
+    setHomeSubTab(cfg.sub);
     setHomeScroll(cfg.scroll ?? null);
     setNavTick((t) => t + 1);
     if (view.type !== "home") {
