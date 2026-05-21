@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Movie, Actor, Genre, tmdb } from "../api/tmdb";
 import HeroSection from "../components/HeroSection";
 import MovieCard from "../components/MovieCard";
@@ -7,11 +7,13 @@ import ActorCard from "../components/ActorCard";
 interface HomePageProps {
   onMovieClick: (movie: Movie) => void;
   onActorClick: (actor: Actor) => void;
+  subTab?: string;
+  scrollTarget?: "actors" | "categories" | null;
 }
 
 const subNav = ["Recommended", "New", "Trending", "Top Rated", "Most Viewed", "Coming Soon"];
 
-export default function HomePage({ onMovieClick, onActorClick }: HomePageProps) {
+export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTarget }: HomePageProps) {
   const [trending, setTrending] = useState<Movie[]>([]);
   const [popular, setPopular] = useState<Movie[]>([]);
   const [topRated, setTopRated] = useState<Movie[]>([]);
