@@ -297,7 +297,7 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
         {/* Sidebar */}
         <aside className="space-y-5">
           {/* Categories */}
-          <div className="border border-neutral-800 bg-neutral-900 p-4">
+          <div ref={categoriesRef} className="border border-neutral-800 bg-neutral-900 p-4">
             <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-white">
               <span className="border-l-4 border-amber-500 pl-2">Categories</span>
             </h3>
