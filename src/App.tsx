@@ -12,9 +12,23 @@ type View =
   | { type: "actor"; id: number }
   | { type: "search"; query: string };
 
+const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories" }> = {
+  home: {},
+  movies: { sub: "Recommended" },
+  series: { sub: "New" },
+  live: { sub: "Trending" },
+  categories: { scroll: "categories" },
+  channels: { scroll: "categories" },
+  stars: { scroll: "actors" },
+  community: { sub: "Most Viewed" },
+};
+
 export default function App() {
   const [view, setView] = useState<View>({ type: "home" });
   const [history, setHistory] = useState<View[]>([]);
+  const [homeSubTab, setHomeSubTab] = useState<string | undefined>();
+  const [homeScroll, setHomeScroll] = useState<"actors" | "categories" | null>(null);
+  const [navTick, setNavTick] = useState(0);
 
   const navigate = (next: View) => {
     setHistory((h) => [...h, view]);
@@ -37,7 +51,15 @@ export default function App() {
   const onActorClick = (actor: Actor) => navigate({ type: "actor", id: actor.id });
   const onSearch = (query: string) => navigate({ type: "search", query });
   const onNav = (page: string) => {
-    if (page === "home") navigate({ type: "home" });
+    const cfg = navMap[page] ?? {};
+    setHomeSubTab(cfg.sub);
+    setHomeScroll(cfg.scroll ?? null);
+    setNavTick((t) => t + 1);
+    if (view.type !== "home") {
+      setHistory((h) => [...h, view]);
+      setView({ type: "home" });
+    }
+    if (!cfg.scroll && typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
   const activePage = view.type === "home" ? "home" : "";
@@ -47,7 +69,13 @@ export default function App() {
       <Header onSearch={onSearch} onNav={onNav} activePage={activePage} />
 
       {view.type === "home" && (
-        <HomePage onMovieClick={onMovieClick} onActorClick={onActorClick} />
+        <HomePage
+          onMovieClick={onMovieClick}
+          onActorClick={onActorClick}
+          subTab={homeSubTab}
+          scrollTarget={homeScroll}
+          navTick={navTick}
+        />
       )}
 
       {view.type === "movie" && (
