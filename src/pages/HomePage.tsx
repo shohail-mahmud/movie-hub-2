@@ -9,11 +9,12 @@ interface HomePageProps {
   onActorClick: (actor: Actor) => void;
   subTab?: string;
   scrollTarget?: "actors" | "categories" | null;
+  navTick?: number;
 }
 
 const subNav = ["Recommended", "New", "Trending", "Top Rated", "Most Viewed", "Coming Soon"];
 
-export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTarget }: HomePageProps) {
+export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTarget, navTick }: HomePageProps) {
   const [trending, setTrending] = useState<Movie[]>([]);
   const [popular, setPopular] = useState<Movie[]>([]);
   const [topRated, setTopRated] = useState<Movie[]>([]);
