@@ -70,11 +70,11 @@ export default function App() {
 
       {view.type === "home" && (
         <HomePage
-          key={`home-${navTick}`}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
           subTab={homeSubTab}
           scrollTarget={homeScroll}
+          navTick={navTick}
         />
       )}
 
