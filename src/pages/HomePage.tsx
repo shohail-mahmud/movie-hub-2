@@ -119,7 +119,7 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
       )}
 
       {/* Sub-nav + filters */}
-      <div className="border-b border-neutral-800 bg-neutral-950">
+      <div ref={subRef} className="border-b border-neutral-800 bg-neutral-950">
         <div className="mx-auto max-w-[1400px] px-4">
           <div className="flex items-center justify-between">
             <div className="flex gap-0 overflow-x-auto">
