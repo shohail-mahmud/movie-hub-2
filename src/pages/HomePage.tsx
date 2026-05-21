@@ -69,12 +69,14 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
       setActiveSub(subTab);
       subRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [subTab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subTab, navTick]);
 
   useEffect(() => {
     if (scrollTarget === "actors") actorsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     if (scrollTarget === "categories") categoriesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [scrollTarget]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollTarget, navTick]);
 
   const heroMovie = trending[0];
 
