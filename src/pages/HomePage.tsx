@@ -27,6 +27,11 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
   const [loading, setLoading] = useState(true);
   const [timeFilter, setTimeFilter] = useState("All time");
   const [qualityFilter, setQualityFilter] = useState("All quality");
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const actorsRef = useRef<HTMLElement | null>(null);
+  const categoriesRef = useRef<HTMLDivElement | null>(null);
+  const subRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -57,6 +62,19 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
     }
   }, [activeGenre]);
 
+  // Sync external sub-tab selection from top nav
+  useEffect(() => {
+    if (subTab && subNav.includes(subTab)) {
+      setActiveSub(subTab);
+      subRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [subTab]);
+
+  useEffect(() => {
+    if (scrollTarget === "actors") actorsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scrollTarget === "categories") categoriesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [scrollTarget]);
+
   const heroMovie = trending[0];
 
   const getSubMovies = () => {
@@ -71,7 +89,18 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
     }
   };
 
-  if (loading) {
+  const toggle = (k: string) => setExpanded((p) => ({ ...p, [k]: !p[k] }));
+  const seeAllBtn = (k: string) => (
+    <button
+      type="button"
+      onClick={() => toggle(k)}
+      className="text-sm text-amber-400 hover:underline"
+    >
+      {expanded[k] ? "Show less" : "See all"}
+    </button>
+  );
+
+  if (loading && trending.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <div className="flex flex-col items-center gap-4">
