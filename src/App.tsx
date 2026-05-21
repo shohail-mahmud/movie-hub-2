@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Movie, Actor } from "../api/tmdb";
-import Header from "../components/Header";
-import HomePage from "../pages/HomePage";
-import ActorPage from "../pages/ActorPage";
-import MovieDetailPage from "../pages/MovieDetailPage";
-import SearchPage from "../pages/SearchPage";
+import { Movie, Actor } from "@/api/tmdb";
+import Header from "@/components/Header";
+import HomePage from "@/pages/HomePage";
+import ActorPage from "@/pages/ActorPage";
+import MovieDetailPage from "@/pages/MovieDetailPage";
+import SearchPage from "@/pages/SearchPage";
 
 type View =
   | { type: "home" }
