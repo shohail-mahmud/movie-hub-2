@@ -171,25 +171,25 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">{activeSub}</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("sub")}
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {getSubMovies().slice(0, 8).map((m) => (
+              {getSubMovies().slice(0, expanded.sub ? undefined : 8).map((m) => (
                 <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
               ))}
             </div>
           </section>
 
           {/* Top Actors */}
-          <section>
+          <section ref={actorsRef}>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">Top Actors</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("actors")}
             </div>
-            <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 xl:grid-cols-8">
-              {actors.slice(0, 8).map((a) => (
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 xl:grid-cols-8">
+              {actors.slice(0, expanded.actors ? undefined : 8).map((a) => (
                 <ActorCard key={a.id} actor={a} onClick={onActorClick} />
               ))}
             </div>
@@ -201,10 +201,10 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">Trending This Week</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("trending")}
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {trending.slice(1, 9).map((m) => (
+              {trending.slice(1, expanded.trending ? undefined : 9).map((m) => (
                 <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
               ))}
             </div>
@@ -216,10 +216,10 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">Top Rated All Time</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("topRated")}
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {topRated.slice(0, 8).map((m) => (
+              {topRated.slice(0, expanded.topRated ? undefined : 8).map((m) => (
                 <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
               ))}
             </div>
@@ -231,10 +231,10 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">Now Playing</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("nowPlaying")}
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {nowPlaying.slice(0, 8).map((m) => (
+              {nowPlaying.slice(0, expanded.nowPlaying ? undefined : 8).map((m) => (
                 <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
               ))}
             </div>
@@ -267,14 +267,15 @@ export default function HomePage({ onMovieClick, onActorClick, subTab, scrollTar
               <h2 className="text-lg font-bold">
                 <span className="border-l-4 border-amber-500 pl-3">Coming Soon</span>
               </h2>
-              <a href="#" className="text-sm text-amber-400 hover:underline">See all</a>
+              {seeAllBtn("upcoming")}
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {upcoming.slice(0, 8).map((m) => (
+              {upcoming.slice(0, expanded.upcoming ? undefined : 8).map((m) => (
                 <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
               ))}
             </div>
           </section>
+
 
           {/* Pagination */}
           <div className="flex items-center justify-center gap-1 pt-4 pb-6">
