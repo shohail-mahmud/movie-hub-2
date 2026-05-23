@@ -27,9 +27,11 @@ interface MovieDetailData extends Movie {
 export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovieClick }: MovieDetailPageProps) {
   const [data, setData] = useState<MovieDetailData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    setPlaying(false);
     window.scrollTo(0, 0);
     const fetchAll = async () => {
       const [details, credits, similar, recommendations] = await Promise.all([
@@ -113,7 +115,10 @@ export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovie
               </div>
               <p className="text-sm text-neutral-300 line-clamp-3 leading-relaxed max-w-lg">{data.overview}</p>
               <div className="flex flex-wrap gap-3 pt-1">
-                <button className="flex items-center gap-2 bg-amber-500 px-6 py-2.5 text-sm font-bold text-black transition hover:bg-amber-400">
+                <button
+                  onClick={() => setPlaying(true)}
+                  className="flex items-center gap-2 bg-amber-500 px-6 py-2.5 text-sm font-bold text-black transition hover:bg-amber-400"
+                >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M5 3l14 9-14 9V3z" /></svg>
                   Watch Now
                 </button>
@@ -127,6 +132,33 @@ export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovie
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 py-8 space-y-10">
+        {/* Vidking Player */}
+        {playing && (
+          <section>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-lg font-bold">
+                <span className="border-l-4 border-amber-500 pl-3">Now Playing</span>
+              </h2>
+              <button
+                onClick={() => setPlaying(false)}
+                className="text-sm text-neutral-400 hover:text-amber-400"
+              >
+                Close ✕
+              </button>
+            </div>
+            <div className="relative w-full overflow-hidden bg-black" style={{ aspectRatio: "16 / 9" }}>
+              <iframe
+                src={`https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`}
+                title={data.title}
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+                referrerPolicy="origin"
+                className="absolute inset-0 h-full w-full border-0"
+              />
+            </div>
+          </section>
+        )}
+
         {/* Cast */}
         {data.cast.length > 0 && (
           <section>

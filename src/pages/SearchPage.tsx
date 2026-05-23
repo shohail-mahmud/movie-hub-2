@@ -13,9 +13,26 @@ export default function SearchPage({ query, onMovieClick }: SearchPageProps) {
 
   useEffect(() => {
     setLoading(true);
-    tmdb.search(query)
-      .then((res) => setResults(res.results.filter((m) => m.poster_path)))
-      .finally(() => setLoading(false));
+    const run = async () => {
+      // Try direct search first, then progressively shorter prefixes for typos
+      const tokens = query.trim().split(/\s+/);
+      const attempts = [query, tokens.slice(0, Math.max(1, tokens.length - 1)).join(" "), tokens[0]];
+      for (const q of attempts) {
+        if (!q) continue;
+        try {
+          const res = await tmdb.search(q);
+          const filtered = res.results.filter((m) => m.poster_path);
+          if (filtered.length > 0) {
+            setResults(filtered);
+            return;
+          }
+        } catch {
+          // continue
+        }
+      }
+      setResults([]);
+    };
+    run().finally(() => setLoading(false));
   }, [query]);
 
   return (
@@ -33,8 +50,8 @@ export default function SearchPage({ query, onMovieClick }: SearchPageProps) {
         ) : results.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-5xl mb-4">🎬</p>
-            <p className="text-xl font-semibold text-neutral-300">No results found</p>
-            <p className="mt-2 text-sm text-neutral-500">Try a different search term</p>
+            <p className="text-xl font-semibold text-neutral-300">No movies found</p>
+            <p className="mt-2 text-sm text-neutral-500">Check the spelling or try a shorter title.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
