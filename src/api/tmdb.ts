@@ -20,6 +20,13 @@ async function get<T>(endpoint: string, params: Record<string, string> = {}): Pr
   return res.json();
 }
 
+export interface Paged<T> {
+  results: T[];
+  page: number;
+  total_pages: number;
+  total_results: number;
+}
+
 export interface Movie {
   id: number;
   title: string;
