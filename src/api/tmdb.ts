@@ -57,18 +57,18 @@ export interface Genre {
 }
 
 export const tmdb = {
-  trending: () => get<{ results: Movie[] }>("/trending/movie/week"),
-  popular: () => get<{ results: Movie[] }>("/movie/popular"),
-  topRated: () => get<{ results: Movie[] }>("/movie/top_rated"),
-  nowPlaying: () => get<{ results: Movie[] }>("/movie/now_playing"),
-  upcoming: () => get<{ results: Movie[] }>("/movie/upcoming"),
+  trending: (page = 1) => get<Paged<Movie>>("/trending/movie/week", { page: String(page) }),
+  popular: (page = 1) => get<Paged<Movie>>("/movie/popular", { page: String(page) }),
+  topRated: (page = 1) => get<Paged<Movie>>("/movie/top_rated", { page: String(page) }),
+  nowPlaying: (page = 1) => get<Paged<Movie>>("/movie/now_playing", { page: String(page) }),
+  upcoming: (page = 1) => get<Paged<Movie>>("/movie/upcoming", { page: String(page) }),
   genres: () => get<{ genres: Genre[] }>("/genre/movie/list"),
-  popularActors: () => get<{ results: Actor[] }>("/person/popular"),
+  popularActors: (page = 1) => get<Paged<Actor>>("/person/popular", { page: String(page) }),
   actorDetails: (id: number) =>
     get<Actor & { biography: string; birthday: string; place_of_birth: string }>(`/person/${id}`),
   actorMovies: (id: number) => get<{ cast: Movie[] }>(`/person/${id}/movie_credits`),
   movieDetails: (id: number) => get<Movie>(`/movie/${id}`),
-  moviesByGenre: (genreId: number) =>
-    get<{ results: Movie[] }>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc" }),
-  search: (query: string) => get<{ results: Movie[] }>("/search/movie", { query }),
+  moviesByGenre: (genreId: number, page = 1) =>
+    get<Paged<Movie>>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc", page: String(page) }),
+  search: (query: string, page = 1) => get<Paged<Movie>>("/search/movie", { query, page: String(page) }),
 };
