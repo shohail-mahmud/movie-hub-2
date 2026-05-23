@@ -13,9 +13,26 @@ export default function SearchPage({ query, onMovieClick }: SearchPageProps) {
 
   useEffect(() => {
     setLoading(true);
-    tmdb.search(query)
-      .then((res) => setResults(res.results.filter((m) => m.poster_path)))
-      .finally(() => setLoading(false));
+    const run = async () => {
+      // Try direct search first, then progressively shorter prefixes for typos
+      const tokens = query.trim().split(/\s+/);
+      const attempts = [query, tokens.slice(0, Math.max(1, tokens.length - 1)).join(" "), tokens[0]];
+      for (const q of attempts) {
+        if (!q) continue;
+        try {
+          const res = await tmdb.search(q);
+          const filtered = res.results.filter((m) => m.poster_path);
+          if (filtered.length > 0) {
+            setResults(filtered);
+            return;
+          }
+        } catch {
+          // continue
+        }
+      }
+      setResults([]);
+    };
+    run().finally(() => setLoading(false));
   }, [query]);
 
   return (
