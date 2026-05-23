@@ -111,7 +111,7 @@ export default function App() {
         <div className="mx-auto max-w-[1400px] px-4 py-10">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             <div>
-              <h4 className="mb-3 text-sm font-bold text-white">MoveHub</h4>
+              <h4 className="mb-3 text-sm font-bold text-white">MovieHub</h4>
               <ul className="space-y-1.5 text-xs text-neutral-400">
                 {["About", "Press", "Careers", "Blog"].map((l) => (
                   <li key={l}><a href="#" className="hover:text-amber-400">{l}</a></li>
@@ -145,10 +145,10 @@ export default function App() {
           </div>
           <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-neutral-800 pt-6 text-xs text-neutral-500 sm:flex-row">
             <div className="flex items-center text-xl font-black">
-              <span className="text-white">Move</span>
+              <span className="text-white">Movie</span>
               <span className="ml-1 rounded-sm bg-amber-500 px-1.5 py-0.5 text-black text-base">Hub</span>
             </div>
-            <p>© 2026 MoveHub. All rights reserved. Powered by TMDB.</p>
+            <p>© 2026 MovieHub. All rights reserved. Powered by TMDB.</p>
           </div>
         </div>
       </footer>

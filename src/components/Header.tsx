@@ -20,7 +20,7 @@ export default function Header({ onSearch, onNav, activePage }: HeaderProps) {
     <header className="sticky top-0 z-50">
       <div className="hidden border-b border-neutral-800 bg-black text-xs text-neutral-400 md:block">
         <div className="mx-auto flex h-8 max-w-[1400px] items-center justify-between px-4">
-          <span>MoveHub — Stream Movies in HD &amp; 4K</span>
+          <span>MovieHub — Stream Movies in HD &amp; 4K</span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition">Upload</a>
             <a href="#" className="hover:text-white transition">Language: EN</a>
@@ -35,7 +35,7 @@ export default function Header({ onSearch, onNav, activePage }: HeaderProps) {
             onClick={() => onNav("home")}
             className="flex items-center text-lg font-black tracking-tight shrink-0 sm:text-2xl"
           >
-            <span className="text-white">Move</span>
+            <span className="text-white">Movie</span>
             <span className="ml-1 rounded-sm bg-amber-500 px-1.5 py-0.5 text-black sm:px-2">Hub</span>
           </button>
 
