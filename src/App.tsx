@@ -5,12 +5,14 @@ import HomePage from "@/pages/HomePage";
 import ActorPage from "@/pages/ActorPage";
 import MovieDetailPage from "@/pages/MovieDetailPage";
 import SearchPage from "@/pages/SearchPage";
+import ListPage, { ListKind } from "@/pages/ListPage";
 
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
   | { type: "actor"; id: number }
-  | { type: "search"; query: string };
+  | { type: "search"; query: string }
+  | { type: "list"; kind: ListKind };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories" }> = {
   home: {},
@@ -72,9 +74,19 @@ export default function App() {
         <HomePage
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onSeeAll={(kind) => navigate({ type: "list", kind })}
           subTab={homeSubTab}
           scrollTarget={homeScroll}
           navTick={navTick}
+        />
+      )}
+
+      {view.type === "list" && (
+        <ListPage
+          kind={view.kind}
+          onBack={goBack}
+          onMovieClick={onMovieClick}
+          onActorClick={onActorClick}
         />
       )}
 
