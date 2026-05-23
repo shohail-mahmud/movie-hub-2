@@ -74,9 +74,19 @@ export default function App() {
         <HomePage
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onSeeAll={(kind) => navigate({ type: "list", kind })}
           subTab={homeSubTab}
           scrollTarget={homeScroll}
           navTick={navTick}
+        />
+      )}
+
+      {view.type === "list" && (
+        <ListPage
+          kind={view.kind}
+          onBack={goBack}
+          onMovieClick={onMovieClick}
+          onActorClick={onActorClick}
         />
       )}
 
