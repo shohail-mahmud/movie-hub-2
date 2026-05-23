@@ -5,12 +5,14 @@ import HomePage from "@/pages/HomePage";
 import ActorPage from "@/pages/ActorPage";
 import MovieDetailPage from "@/pages/MovieDetailPage";
 import SearchPage from "@/pages/SearchPage";
+import ListPage, { ListKind } from "@/pages/ListPage";
 
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
   | { type: "actor"; id: number }
-  | { type: "search"; query: string };
+  | { type: "search"; query: string }
+  | { type: "list"; kind: ListKind };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories" }> = {
   home: {},
