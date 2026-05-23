@@ -27,6 +27,7 @@ interface MovieDetailData extends Movie {
 export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovieClick }: MovieDetailPageProps) {
   const [data, setData] = useState<MovieDetailData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     setLoading(true);
