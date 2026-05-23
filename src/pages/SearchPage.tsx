@@ -50,8 +50,8 @@ export default function SearchPage({ query, onMovieClick }: SearchPageProps) {
         ) : results.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-5xl mb-4">🎬</p>
-            <p className="text-xl font-semibold text-neutral-300">No results found</p>
-            <p className="mt-2 text-sm text-neutral-500">Try a different search term</p>
+            <p className="text-xl font-semibold text-neutral-300">No movies found</p>
+            <p className="mt-2 text-sm text-neutral-500">Check the spelling or try a shorter title.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
