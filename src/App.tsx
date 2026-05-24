@@ -80,21 +80,11 @@ export default function App() {
     if (!cfg.scroll && typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
-  return (
-    <div className="min-h-screen bg-neutral-950 text-white">
-      <Header
-        onSearch={onSearch}
-        onNav={onNav}
-        activePage={view.type === "home" ? activeNav : ""}
-        onMovieClick={onMovieClick}
-        onActorClick={onActorClick}
-      />
-
   const activePage =
     view.type === "home"
       ? activeNav
-      : view.type === "list" && (view as any).navKey
-      ? (view as any).navKey
+      : view.type === "list" && view.navKey
+      ? view.navKey
       : "";
 
   const onWatch = (movieId: number) => navigate({ type: "watch", id: movieId });
@@ -148,10 +138,19 @@ export default function App() {
         />
       )}
 
+      {view.type === "actor" && (
+        <ActorPage actorId={view.id} onBack={goBack} onMovieClick={onMovieClick} />
+      )}
+
+      {view.type === "search" && (
+        <SearchPage
+          query={view.query}
+          category={view.category}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
         />
       )}
+
 
       <footer className="mt-10 border-t border-neutral-800 bg-black">
         <div className="mx-auto max-w-[1400px] px-4 py-10">
