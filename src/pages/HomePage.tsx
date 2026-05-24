@@ -138,7 +138,7 @@ export default function HomePage({
       <div ref={subRef} className="border-b border-neutral-800 bg-neutral-950">
         <div className="mx-auto max-w-[1400px] px-3 sm:px-4">
           <div className="flex items-center justify-between">
-            <div className="flex gap-0 overflow-x-auto">
+            <div className="flex gap-0 overflow-x-auto no-scrollbar">
               {subNav.map((s) => (
                 <button
                   key={s}
