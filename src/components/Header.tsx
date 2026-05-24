@@ -188,7 +188,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
         </div>
 
         <nav className="border-t border-neutral-800 bg-neutral-900">
-          <div className="mx-auto flex max-w-[1400px] items-center overflow-x-auto px-4">
+          <div className="mx-auto flex max-w-[1400px] items-center overflow-x-auto no-scrollbar px-4">
             {topNav.map((item) => {
               const key = item.toLowerCase();
               return (
