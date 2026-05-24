@@ -6,13 +6,15 @@ import ActorPage from "@/pages/ActorPage";
 import MovieDetailPage from "@/pages/MovieDetailPage";
 import SearchPage from "@/pages/SearchPage";
 import ListPage, { ListKind } from "@/pages/ListPage";
+import WatchPage from "@/pages/WatchPage";
 
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
+  | { type: "watch"; id: number }
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
-  | { type: "list"; kind: ListKind };
+  | { type: "list"; kind: ListKind; navKey?: string };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
@@ -21,7 +23,7 @@ const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; l
   live: { sub: "Trending" },
   categories: { scroll: "categories" },
   channels: { scroll: "categories" },
-  stars: { scroll: "actors" },
+  stars: { list: "actors" },
   community: { sub: "Most Viewed" },
 };
 
@@ -59,6 +61,15 @@ export default function App() {
   const onNav = (page: string) => {
     const cfg = navMap[page] ?? {};
     setActiveNav(page);
+
+    // If this nav maps to a dedicated list page (e.g. Stars → actors)
+    if (cfg.list) {
+      setHistory((h) => (view.type === "list" && (view as any).navKey === page ? h : [...h, view]));
+      setView({ type: "list", kind: cfg.list, navKey: page });
+      if (typeof window !== "undefined") window.scrollTo(0, 0);
+      return;
+    }
+
     setHomeSubTab(cfg.sub);
     setHomeScroll(cfg.scroll ?? null);
     setNavTick((t) => t + 1);
@@ -69,12 +80,21 @@ export default function App() {
     if (!cfg.scroll && typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
+  const activePage =
+    view.type === "home"
+      ? activeNav
+      : view.type === "list" && view.navKey
+      ? view.navKey
+      : "";
+
+  const onWatch = (movieId: number) => navigate({ type: "watch", id: movieId });
+
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
       <Header
         onSearch={onSearch}
         onNav={onNav}
-        activePage={view.type === "home" ? activeNav : ""}
+        activePage={activePage}
         onMovieClick={onMovieClick}
         onActorClick={onActorClick}
       />
@@ -105,6 +125,16 @@ export default function App() {
           onBack={goBack}
           onActorClick={onActorClick}
           onMovieClick={onMovieClick}
+          onWatch={onWatch}
+        />
+      )}
+
+      {view.type === "watch" && (
+        <WatchPage
+          movieId={view.id}
+          onBack={goBack}
+          onActorClick={onActorClick}
+          onMovieClick={onMovieClick}
         />
       )}
 
@@ -120,6 +150,7 @@ export default function App() {
           onActorClick={onActorClick}
         />
       )}
+
 
       <footer className="mt-10 border-t border-neutral-800 bg-black">
         <div className="mx-auto max-w-[1400px] px-4 py-10">
