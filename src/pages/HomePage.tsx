@@ -138,7 +138,7 @@ export default function HomePage({
       <div ref={subRef} className="border-b border-neutral-800 bg-neutral-950">
         <div className="mx-auto max-w-[1400px] px-3 sm:px-4">
           <div className="flex items-center justify-between">
-            <div className="flex gap-0 overflow-x-auto">
+            <div className="flex gap-0 overflow-x-auto no-scrollbar">
               {subNav.map((s) => (
                 <button
                   key={s}
@@ -217,11 +217,19 @@ export default function HomePage({
               </div>
             )}
             {loading ? (
-              <ActorGridSkeleton count={8} />
+              <div className="flex gap-3 overflow-x-auto no-scrollbar">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="w-20 shrink-0 sm:w-24">
+                    <div className="aspect-square w-full animate-pulse rounded-full bg-neutral-800" />
+                  </div>
+                ))}
+              </div>
             ) : (
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 sm:gap-3 md:grid-cols-8 lg:grid-cols-6 xl:grid-cols-8">
-                {actors.slice(0, 8).map((a) => (
-                  <ActorCard key={a.id} actor={a} onClick={onActorClick} />
+              <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                {actors.map((a) => (
+                  <div key={a.id} className="w-20 shrink-0 sm:w-24">
+                    <ActorCard actor={a} onClick={onActorClick} />
+                  </div>
                 ))}
               </div>
             )}
