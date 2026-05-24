@@ -7,6 +7,7 @@ interface MovieDetailPageProps {
   onBack: () => void;
   onActorClick: (actor: Actor) => void;
   onMovieClick: (movie: Movie) => void;
+  onWatch: (movieId: number) => void;
 }
 
 interface CastMember {
