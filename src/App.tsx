@@ -61,6 +61,15 @@ export default function App() {
   const onNav = (page: string) => {
     const cfg = navMap[page] ?? {};
     setActiveNav(page);
+
+    // If this nav maps to a dedicated list page (e.g. Stars → actors)
+    if (cfg.list) {
+      setHistory((h) => (view.type === "list" && (view as any).navKey === page ? h : [...h, view]));
+      setView({ type: "list", kind: cfg.list, navKey: page });
+      if (typeof window !== "undefined") window.scrollTo(0, 0);
+      return;
+    }
+
     setHomeSubTab(cfg.sub);
     setHomeScroll(cfg.scroll ?? null);
     setNavTick((t) => t + 1);
