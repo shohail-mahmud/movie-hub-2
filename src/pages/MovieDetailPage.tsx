@@ -115,7 +115,7 @@ export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovie
               <p className="text-sm text-neutral-300 line-clamp-3 leading-relaxed max-w-lg">{data.overview}</p>
               <div className="flex flex-wrap gap-3 pt-1">
                 <button
-                  onClick={() => setPlaying(true)}
+                  onClick={() => onWatch(movieId)}
                   className="flex items-center gap-2 bg-amber-500 px-6 py-2.5 text-sm font-bold text-black transition hover:bg-amber-400"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4"><path d="M5 3l14 9-14 9V3z" /></svg>
