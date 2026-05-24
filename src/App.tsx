@@ -90,6 +90,25 @@ export default function App() {
         onActorClick={onActorClick}
       />
 
+  const activePage =
+    view.type === "home"
+      ? activeNav
+      : view.type === "list" && (view as any).navKey
+      ? (view as any).navKey
+      : "";
+
+  const onWatch = (movieId: number) => navigate({ type: "watch", id: movieId });
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-white">
+      <Header
+        onSearch={onSearch}
+        onNav={onNav}
+        activePage={activePage}
+        onMovieClick={onMovieClick}
+        onActorClick={onActorClick}
+      />
+
       {view.type === "home" && (
         <HomePage
           onMovieClick={onMovieClick}
@@ -116,17 +135,19 @@ export default function App() {
           onBack={goBack}
           onActorClick={onActorClick}
           onMovieClick={onMovieClick}
+          onWatch={onWatch}
         />
       )}
 
-      {view.type === "actor" && (
-        <ActorPage actorId={view.id} onBack={goBack} onMovieClick={onMovieClick} />
+      {view.type === "watch" && (
+        <WatchPage
+          movieId={view.id}
+          onBack={goBack}
+          onActorClick={onActorClick}
+          onMovieClick={onMovieClick}
+        />
       )}
 
-      {view.type === "search" && (
-        <SearchPage
-          query={view.query}
-          category={view.category}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
         />
