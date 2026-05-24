@@ -31,7 +31,6 @@ export default function MovieDetailPage({ movieId, onBack, onActorClick, onMovie
 
   useEffect(() => {
     setLoading(true);
-    setPlaying(false);
     window.scrollTo(0, 0);
     const fetchAll = async () => {
       const [details, credits, similar, recommendations] = await Promise.all([
