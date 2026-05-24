@@ -6,13 +6,15 @@ import ActorPage from "@/pages/ActorPage";
 import MovieDetailPage from "@/pages/MovieDetailPage";
 import SearchPage from "@/pages/SearchPage";
 import ListPage, { ListKind } from "@/pages/ListPage";
+import WatchPage from "@/pages/WatchPage";
 
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
+  | { type: "watch"; id: number }
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
-  | { type: "list"; kind: ListKind };
+  | { type: "list"; kind: ListKind; navKey?: string };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
@@ -21,7 +23,7 @@ const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; l
   live: { sub: "Trending" },
   categories: { scroll: "categories" },
   channels: { scroll: "categories" },
-  stars: { scroll: "actors" },
+  stars: { list: "actors" },
   community: { sub: "Most Viewed" },
 };
 
