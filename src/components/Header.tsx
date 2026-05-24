@@ -1,20 +1,76 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { tmdb, posterUrl, profileUrl, Movie, Actor } from "@/api/tmdb";
 
 const topNav = ["Home", "Movies", "Series", "Live", "Categories", "Channels", "Stars", "Community"];
 
+export type SearchCategory = "Movies" | "Stars" | "Series";
+
 interface HeaderProps {
-  onSearch: (query: string) => void;
+  onSearch: (query: string, category: SearchCategory) => void;
   onNav: (page: string) => void;
   activePage: string;
+  onMovieClick?: (movie: Movie) => void;
+  onActorClick?: (actor: Actor) => void;
 }
 
-export default function Header({ onSearch, onNav, activePage }: HeaderProps) {
+export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick }: HeaderProps) {
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<SearchCategory>("Movies");
+  const [movieSugs, setMovieSugs] = useState<Movie[]>([]);
+  const [actorSugs, setActorSugs] = useState<Actor[]>([]);
+  const [open, setOpen] = useState(false);
+  const [loadingSugs, setLoadingSugs] = useState(false);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
+  // Debounced live suggestions
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setMovieSugs([]);
+      setActorSugs([]);
+      return;
+    }
+    setLoadingSugs(true);
+    const handle = setTimeout(async () => {
+      try {
+        if (category === "Stars") {
+          const res = await tmdb.searchActors(q);
+          setActorSugs(res.results.filter((a) => a.profile_path).slice(0, 6));
+          setMovieSugs([]);
+        } else {
+          // Movies & Series both hit movie search for now (TMDB TV could be added later)
+          const res = await tmdb.search(q);
+          setMovieSugs(res.results.filter((m) => m.poster_path).slice(0, 6));
+          setActorSugs([]);
+        }
+      } catch {
+        setMovieSugs([]);
+        setActorSugs([]);
+      } finally {
+        setLoadingSugs(false);
+      }
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [query, category]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim());
+    const q = query.trim();
+    if (!q) return;
+    setOpen(false);
+    onSearch(q, category);
   };
+
+  const hasSugs = movieSugs.length > 0 || actorSugs.length > 0;
 
   return (
     <header className="sticky top-0 z-50">
@@ -39,26 +95,84 @@ export default function Header({ onSearch, onNav, activePage }: HeaderProps) {
             <span className="ml-1 rounded-sm bg-amber-500 px-1.5 py-0.5 text-black sm:px-2">Hub</span>
           </button>
 
-          <form onSubmit={handleSearch} className="flex flex-1 min-w-0 max-w-2xl items-stretch overflow-hidden rounded-sm">
-            <select className="border-r border-neutral-700 bg-neutral-800 px-3 text-sm text-neutral-300 focus:outline-none hidden md:block">
-              <option>Movies</option>
-              <option>Stars</option>
-              <option>Series</option>
-            </select>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search..."
-              className="min-w-0 flex-1 bg-neutral-800 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:outline-none"
-            />
-            <button type="submit" aria-label="Search" className="bg-amber-500 px-3 text-black transition hover:bg-amber-400 sm:px-5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4 sm:h-5 sm:w-5">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" strokeLinecap="round" />
-              </svg>
-            </button>
-          </form>
+          <div ref={wrapRef} className="relative flex flex-1 min-w-0 max-w-2xl">
+            <form onSubmit={submit} className="flex w-full items-stretch overflow-hidden rounded-sm">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value as SearchCategory)}
+                className="border-r border-neutral-700 bg-neutral-800 px-2 text-xs text-neutral-200 focus:outline-none sm:px-3 sm:text-sm"
+                aria-label="Search category"
+              >
+                <option value="Movies">Movies</option>
+                <option value="Stars">Stars</option>
+                <option value="Series">Series</option>
+              </select>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
+                onFocus={() => setOpen(true)}
+                placeholder={`Search ${category.toLowerCase()}...`}
+                className="min-w-0 flex-1 bg-neutral-800 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:outline-none"
+              />
+              <button type="submit" aria-label="Search" className="bg-amber-500 px-3 text-black transition hover:bg-amber-400 sm:px-5">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4 sm:h-5 sm:w-5">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </form>
+
+            {open && query.trim().length >= 2 && (
+              <div className="absolute left-0 right-0 top-full mt-1 z-50 max-h-96 overflow-y-auto border border-neutral-700 bg-neutral-900 shadow-xl">
+                {loadingSugs && !hasSugs && (
+                  <div className="px-3 py-3 text-xs text-neutral-500">Searching…</div>
+                )}
+                {!loadingSugs && !hasSugs && (
+                  <div className="px-3 py-3 text-xs text-neutral-500">No matches. Press Enter to search anyway.</div>
+                )}
+                {movieSugs.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => { setOpen(false); setQuery(""); onMovieClick?.(m); }}
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-neutral-800"
+                  >
+                    <img src={posterUrl(m.poster_path, "w92")} alt={m.title} className="h-12 w-8 object-cover rounded-sm shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm text-white">{m.title}</p>
+                      <p className="text-xs text-neutral-500">
+                        {m.release_date?.slice(0, 4) || "—"} · ★ {m.vote_average?.toFixed(1) ?? "—"}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+                {actorSugs.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => { setOpen(false); setQuery(""); onActorClick?.(a); }}
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-neutral-800"
+                  >
+                    <img src={profileUrl(a.profile_path, "w185")} alt={a.name} className="h-10 w-10 rounded-full object-cover shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm text-white">{a.name}</p>
+                      <p className="text-xs text-neutral-500">{a.known_for_department}</p>
+                    </div>
+                  </button>
+                ))}
+                {hasSugs && (
+                  <button
+                    type="button"
+                    onClick={submit as any}
+                    className="block w-full border-t border-neutral-800 px-3 py-2 text-left text-xs font-semibold text-amber-400 hover:bg-neutral-800"
+                  >
+                    See all results for "{query}" →
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="flex items-center gap-1.5 shrink-0 sm:gap-2">
             <button className="hidden border border-neutral-700 px-3 py-1.5 text-sm text-neutral-200 transition hover:border-amber-500 hover:text-amber-400 md:block">
@@ -75,19 +189,22 @@ export default function Header({ onSearch, onNav, activePage }: HeaderProps) {
 
         <nav className="border-t border-neutral-800 bg-neutral-900">
           <div className="mx-auto flex max-w-[1400px] items-center overflow-x-auto px-4">
-            {topNav.map((item) => (
-              <button
-                key={item}
-                onClick={() => onNav(item.toLowerCase())}
-                className={`whitespace-nowrap px-4 py-3 text-sm font-medium transition border-b-2 ${
-                  activePage === item.toLowerCase()
-                    ? "border-amber-500 text-white"
-                    : "border-transparent text-neutral-400 hover:text-white"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+            {topNav.map((item) => {
+              const key = item.toLowerCase();
+              return (
+                <button
+                  key={item}
+                  onClick={() => onNav(key)}
+                  className={`whitespace-nowrap px-4 py-3 text-sm font-medium transition border-b-2 ${
+                    activePage === key
+                      ? "border-amber-500 text-white"
+                      : "border-transparent text-neutral-400 hover:text-white"
+                  }`}
+                >
+                  {item}
+                </button>
+              );
+            })}
           </div>
         </nav>
       </div>

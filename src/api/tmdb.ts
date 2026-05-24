@@ -71,4 +71,5 @@ export const tmdb = {
   moviesByGenre: (genreId: number, page = 1) =>
     get<Paged<Movie>>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc", page: String(page) }),
   search: (query: string, page = 1) => get<Paged<Movie>>("/search/movie", { query, page: String(page) }),
+  searchActors: (query: string, page = 1) => get<Paged<Actor>>("/search/person", { query, page: String(page) }),
 };

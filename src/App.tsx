@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Movie, Actor } from "@/api/tmdb";
-import Header from "@/components/Header";
+import Header, { SearchCategory } from "@/components/Header";
 import HomePage from "@/pages/HomePage";
 import ActorPage from "@/pages/ActorPage";
 import MovieDetailPage from "@/pages/MovieDetailPage";
@@ -11,10 +11,10 @@ type View =
   | { type: "home" }
   | { type: "movie"; id: number }
   | { type: "actor"; id: number }
-  | { type: "search"; query: string }
+  | { type: "search"; query: string; category: SearchCategory }
   | { type: "list"; kind: ListKind };
 
-const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories" }> = {
+const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
   movies: { sub: "Recommended" },
   series: { sub: "New" },
@@ -31,6 +31,7 @@ export default function App() {
   const [homeSubTab, setHomeSubTab] = useState<string | undefined>();
   const [homeScroll, setHomeScroll] = useState<"actors" | "categories" | null>(null);
   const [navTick, setNavTick] = useState(0);
+  const [activeNav, setActiveNav] = useState<string>("home");
 
   const navigate = (next: View) => {
     setHistory((h) => [...h, view]);
@@ -46,14 +47,18 @@ export default function App() {
       if (typeof window !== "undefined") window.scrollTo(0, 0);
     } else {
       setView({ type: "home" });
+      setActiveNav("home");
     }
   };
 
   const onMovieClick = (movie: Movie) => navigate({ type: "movie", id: movie.id });
   const onActorClick = (actor: Actor) => navigate({ type: "actor", id: actor.id });
-  const onSearch = (query: string) => navigate({ type: "search", query });
+  const onSearch = (query: string, category: SearchCategory) =>
+    navigate({ type: "search", query, category });
+
   const onNav = (page: string) => {
     const cfg = navMap[page] ?? {};
+    setActiveNav(page);
     setHomeSubTab(cfg.sub);
     setHomeScroll(cfg.scroll ?? null);
     setNavTick((t) => t + 1);
@@ -64,11 +69,15 @@ export default function App() {
     if (!cfg.scroll && typeof window !== "undefined") window.scrollTo(0, 0);
   };
 
-  const activePage = view.type === "home" ? "home" : "";
-
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
-      <Header onSearch={onSearch} onNav={onNav} activePage={activePage} />
+      <Header
+        onSearch={onSearch}
+        onNav={onNav}
+        activePage={view.type === "home" ? activeNav : ""}
+        onMovieClick={onMovieClick}
+        onActorClick={onActorClick}
+      />
 
       {view.type === "home" && (
         <HomePage
@@ -104,7 +113,12 @@ export default function App() {
       )}
 
       {view.type === "search" && (
-        <SearchPage query={view.query} onMovieClick={onMovieClick} />
+        <SearchPage
+          query={view.query}
+          category={view.category}
+          onMovieClick={onMovieClick}
+          onActorClick={onActorClick}
+        />
       )}
 
       <footer className="mt-10 border-t border-neutral-800 bg-black">
