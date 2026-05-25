@@ -17,7 +17,8 @@ type View =
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
   | { type: "list"; kind: ListKind; navKey?: string }
-  | { type: "userlist"; kind: ListKey };
+  | { type: "userlist"; kind: ListKey }
+  | { type: "about" };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
