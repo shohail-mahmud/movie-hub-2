@@ -96,7 +96,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            className="-ml-1 shrink-0 p-2 text-neutral-300 hover:text-amber-400 md:hidden"
+            className="-ml-1 shrink-0 p-2 text-neutral-300 hover:text-amber-400"
             aria-label="Toggle menu"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
