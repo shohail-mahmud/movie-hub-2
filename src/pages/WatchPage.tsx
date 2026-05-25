@@ -87,8 +87,8 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
 
       {/* Player */}
       <div className="bg-black">
-        <div className="mx-auto max-w-[1400px] px-0 sm:px-4 sm:py-4">
-          <div className="relative w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
+        <div className="mx-auto max-w-[960px] px-0 sm:px-4 sm:py-4">
+          <div className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
             <iframe
               src={`https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`}
               title={data.title}
