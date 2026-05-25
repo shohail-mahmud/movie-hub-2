@@ -156,6 +156,12 @@ export default function App() {
         />
       )}
 
+      {view.type === "userlist" && (
+        <UserListPage kind={view.kind} onBack={goBack} onMovieClick={onMovieClick} />
+      )}
+
+
+
 
       <footer className="mt-10 border-t border-neutral-800 bg-black">
         <div className="mx-auto max-w-[1400px] px-4 py-10">
