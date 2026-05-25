@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Movie, Actor, tmdb, backdropUrl, profileUrl, posterUrl } from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
+import { userLists } from "@/lib/userLists";
 
 interface WatchPageProps {
   movieId: number;
