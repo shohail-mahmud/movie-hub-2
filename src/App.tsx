@@ -100,6 +100,8 @@ export default function App() {
         activePage={activePage}
         onMovieClick={onMovieClick}
         onActorClick={onActorClick}
+        onOpenWatchlist={() => navigate({ type: "userlist", kind: "watchlist" })}
+        onOpenHistory={() => navigate({ type: "userlist", kind: "history" })}
       />
 
       {view.type === "home" && (
