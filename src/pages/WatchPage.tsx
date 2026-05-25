@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Movie, Actor, tmdb, backdropUrl, profileUrl, posterUrl } from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
+import { userLists } from "@/lib/userLists";
 
 interface WatchPageProps {
   movieId: number;
@@ -50,6 +51,13 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
     })().finally(() => setLoading(false));
   }, [movieId]);
 
+  useEffect(() => {
+    if (data) {
+      userLists.add("history", data);
+      setInList(userLists.has("watchlist", data.id));
+    }
+  }, [data]);
+
   if (loading || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
@@ -79,8 +87,8 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
 
       {/* Player */}
       <div className="bg-black">
-        <div className="mx-auto max-w-[1400px] px-0 sm:px-4 sm:py-4">
-          <div className="relative w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
+        <div className="mx-auto max-w-[960px] px-0 sm:px-4 sm:py-4">
+          <div className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
             <iframe
               src={`https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`}
               title={data.title}
@@ -127,7 +135,7 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
             <p className="text-sm leading-relaxed text-neutral-300 sm:max-w-2xl">{data.overview}</p>
             <div className="flex flex-wrap gap-2 pt-1">
               <button
-                onClick={() => setInList((v) => !v)}
+                onClick={() => { userLists.toggle("watchlist", data); setInList(userLists.has("watchlist", data.id)); }}
                 className={`px-4 py-2 text-xs font-semibold transition sm:text-sm ${
                   inList
                     ? "bg-amber-500 text-black hover:bg-amber-400"

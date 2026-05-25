@@ -11,9 +11,11 @@ interface HeaderProps {
   activePage: string;
   onMovieClick?: (movie: Movie) => void;
   onActorClick?: (actor: Actor) => void;
+  onOpenWatchlist?: () => void;
+  onOpenHistory?: () => void;
 }
 
-export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick }: HeaderProps) {
+export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick, onOpenWatchlist, onOpenHistory }: HeaderProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<SearchCategory>("Movies");
   const [movieSugs, setMovieSugs] = useState<Movie[]>([]);
@@ -194,14 +196,26 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           </div>
 
           <div className="hidden shrink-0 items-center gap-2 sm:flex">
-            <button className="hidden border border-neutral-700 px-3 py-1.5 text-sm text-neutral-200 transition hover:border-amber-500 hover:text-amber-400 md:block">
-              Upload
+            <button
+              onClick={onOpenHistory}
+              className="flex items-center gap-1.5 border border-neutral-700 px-3 py-1.5 text-sm text-neutral-200 transition hover:border-amber-500 hover:text-amber-400"
+              title="Watch History"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 3v5h5M12 7v5l3 2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="hidden lg:inline">History</span>
             </button>
-            <button className="bg-amber-500 px-3 py-1.5 text-sm font-semibold text-black transition hover:bg-amber-400">
-              Sign In
-            </button>
-            <button className="hidden border border-neutral-700 px-3 py-1.5 text-sm text-neutral-200 transition hover:border-amber-500 md:block">
-              Join
+            <button
+              onClick={onOpenWatchlist}
+              className="flex items-center gap-1.5 bg-amber-500 px-3 py-1.5 text-sm font-semibold text-black transition hover:bg-amber-400"
+              title="Watchlist"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4">
+                <path d="M5 4h14v17l-7-4-7 4V4z" strokeLinejoin="round" />
+              </svg>
+              <span className="hidden lg:inline">Watchlist</span>
             </button>
           </div>
         </div>
@@ -249,9 +263,18 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
                 );
               })}
             </div>
-            <div className="border-t border-neutral-800 px-3 py-2">
-              <button className="w-full bg-amber-500 px-3 py-2 text-sm font-semibold text-black transition hover:bg-amber-400">
-                Sign In
+            <div className="grid grid-cols-2 gap-2 border-t border-neutral-800 px-3 py-2">
+              <button
+                onClick={() => { setMenuOpen(false); onOpenHistory?.(); }}
+                className="border border-neutral-700 px-3 py-2 text-sm text-neutral-200 transition hover:border-amber-500 hover:text-amber-400"
+              >
+                History
+              </button>
+              <button
+                onClick={() => { setMenuOpen(false); onOpenWatchlist?.(); }}
+                className="bg-amber-500 px-3 py-2 text-sm font-semibold text-black transition hover:bg-amber-400"
+              >
+                Watchlist
               </button>
             </div>
           </nav>
