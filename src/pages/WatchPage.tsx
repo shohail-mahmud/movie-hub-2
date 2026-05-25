@@ -51,6 +51,13 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
     })().finally(() => setLoading(false));
   }, [movieId]);
 
+  useEffect(() => {
+    if (data) {
+      userLists.add("history", data);
+      setInList(userLists.has("watchlist", data.id));
+    }
+  }, [data]);
+
   if (loading || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
