@@ -220,27 +220,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           </div>
         </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden border-t border-neutral-800 bg-neutral-900 md:block">
-          <div className="mx-auto flex max-w-[1400px] items-center overflow-x-auto no-scrollbar px-4">
-            {topNav.map((item) => {
-              const key = item.toLowerCase();
-              return (
-                <button
-                  key={item}
-                  onClick={() => handleNavClick(key)}
-                  className={`whitespace-nowrap px-4 py-3 text-sm font-medium transition border-b-2 ${
-                    activePage === key
-                      ? "border-amber-500 text-white"
-                      : "border-transparent text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  {item}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
+        {/* Desktop nav removed per design — use search + hamburger on mobile */}
 
         {/* Mobile dropdown nav */}
         {menuOpen && (
