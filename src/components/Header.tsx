@@ -224,7 +224,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
 
         {/* Mobile dropdown nav */}
         {menuOpen && (
-          <nav className="border-t border-neutral-800 bg-neutral-900 md:hidden">
+          <nav className="border-t border-neutral-800 bg-neutral-900">
             <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px bg-neutral-800">
               {topNav.map((item) => {
                 const key = item.toLowerCase();
