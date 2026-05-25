@@ -263,9 +263,18 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
                 );
               })}
             </div>
-            <div className="border-t border-neutral-800 px-3 py-2">
-              <button className="w-full bg-amber-500 px-3 py-2 text-sm font-semibold text-black transition hover:bg-amber-400">
-                Sign In
+            <div className="grid grid-cols-2 gap-2 border-t border-neutral-800 px-3 py-2">
+              <button
+                onClick={() => { setMenuOpen(false); onOpenHistory?.(); }}
+                className="border border-neutral-700 px-3 py-2 text-sm text-neutral-200 transition hover:border-amber-500 hover:text-amber-400"
+              >
+                History
+              </button>
+              <button
+                onClick={() => { setMenuOpen(false); onOpenWatchlist?.(); }}
+                className="bg-amber-500 px-3 py-2 text-sm font-semibold text-black transition hover:bg-amber-400"
+              >
+                Watchlist
               </button>
             </div>
           </nav>
