@@ -79,16 +79,6 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="hidden border-b border-neutral-800 bg-black text-xs text-neutral-400 md:block">
-        <div className="mx-auto flex h-8 max-w-[1400px] items-center justify-between px-4">
-          <span>MovieHub — Stream Movies in HD &amp; 4K</span>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition">Upload</a>
-            <a href="#" className="hover:text-white transition">Language: EN</a>
-            <a href="#" className="hover:text-white transition">Help</a>
-          </div>
-        </div>
-      </div>
 
       <div className="border-b border-neutral-800 bg-black">
         <div className="mx-auto flex h-14 w-full max-w-[1400px] items-center gap-2 px-3 sm:h-16 sm:gap-4 sm:px-4">
