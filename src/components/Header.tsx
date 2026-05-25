@@ -79,16 +79,6 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="hidden border-b border-neutral-800 bg-black text-xs text-neutral-400 md:block">
-        <div className="mx-auto flex h-8 max-w-[1400px] items-center justify-between px-4">
-          <span>MovieHub — Stream Movies in HD &amp; 4K</span>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition">Upload</a>
-            <a href="#" className="hover:text-white transition">Language: EN</a>
-            <a href="#" className="hover:text-white transition">Help</a>
-          </div>
-        </div>
-      </div>
 
       <div className="border-b border-neutral-800 bg-black">
         <div className="mx-auto flex h-14 w-full max-w-[1400px] items-center gap-2 px-3 sm:h-16 sm:gap-4 sm:px-4">
@@ -96,7 +86,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            className="-ml-1 shrink-0 p-2 text-neutral-300 hover:text-amber-400 md:hidden"
+            className="-ml-1 shrink-0 p-2 text-neutral-300 hover:text-amber-400"
             aria-label="Toggle menu"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
@@ -220,31 +210,11 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           </div>
         </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden border-t border-neutral-800 bg-neutral-900 md:block">
-          <div className="mx-auto flex max-w-[1400px] items-center overflow-x-auto no-scrollbar px-4">
-            {topNav.map((item) => {
-              const key = item.toLowerCase();
-              return (
-                <button
-                  key={item}
-                  onClick={() => handleNavClick(key)}
-                  className={`whitespace-nowrap px-4 py-3 text-sm font-medium transition border-b-2 ${
-                    activePage === key
-                      ? "border-amber-500 text-white"
-                      : "border-transparent text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  {item}
-                </button>
-              );
-            })}
-          </div>
-        </nav>
+        {/* Desktop nav removed per design — use search + hamburger on mobile */}
 
         {/* Mobile dropdown nav */}
         {menuOpen && (
-          <nav className="border-t border-neutral-800 bg-neutral-900 md:hidden">
+          <nav className="border-t border-neutral-800 bg-neutral-900">
             <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px bg-neutral-800">
               {topNav.map((item) => {
                 const key = item.toLowerCase();
