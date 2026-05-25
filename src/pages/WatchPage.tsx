@@ -135,7 +135,7 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
             <p className="text-sm leading-relaxed text-neutral-300 sm:max-w-2xl">{data.overview}</p>
             <div className="flex flex-wrap gap-2 pt-1">
               <button
-                onClick={() => setInList((v) => !v)}
+                onClick={() => { userLists.toggle("watchlist", data); setInList(userLists.has("watchlist", data.id)); }}
                 className={`px-4 py-2 text-xs font-semibold transition sm:text-sm ${
                   inList
                     ? "bg-amber-500 text-black hover:bg-amber-400"
