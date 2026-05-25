@@ -7,6 +7,8 @@ import MovieDetailPage from "@/pages/MovieDetailPage";
 import SearchPage from "@/pages/SearchPage";
 import ListPage, { ListKind } from "@/pages/ListPage";
 import WatchPage from "@/pages/WatchPage";
+import UserListPage from "@/pages/UserListPage";
+import { ListKey } from "@/lib/userLists";
 
 type View =
   | { type: "home" }
@@ -14,7 +16,8 @@ type View =
   | { type: "watch"; id: number }
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
-  | { type: "list"; kind: ListKind; navKey?: string };
+  | { type: "list"; kind: ListKind; navKey?: string }
+  | { type: "userlist"; kind: ListKey };
 
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
