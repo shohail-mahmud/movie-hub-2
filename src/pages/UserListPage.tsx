@@ -56,9 +56,20 @@ export default function UserListPage({ kind, onBack, onMovieClick }: Props) {
       </div>
 
       <div className="mx-auto max-w-[1400px] px-3 py-6 sm:px-4 sm:py-8">
-        <div className="mb-4 flex items-center gap-3">
+        <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="border-l-4 border-amber-500 pl-3 text-base font-bold sm:text-lg">{meta.title}</span>
           <span className="text-xs text-neutral-500">{items.length} {items.length === 1 ? "item" : "items"}</span>
+          {items.length > 0 && (
+            <button
+              onClick={() => { if (confirm(`Clear all items from ${meta.title}?`)) userLists.clear(kind); }}
+              className="ml-auto flex items-center gap-1.5 border border-red-500/40 px-3 py-1.5 text-xs font-semibold text-red-400 transition hover:bg-red-500 hover:text-white"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
+                <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {kind === "history" ? "Clear watch history" : "Clear all"}
+            </button>
+          )}
         </div>
 
         {items.length === 0 ? (
