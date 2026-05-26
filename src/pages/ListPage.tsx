@@ -10,7 +10,8 @@ export type ListKind =
   | "topRated"
   | "nowPlaying"
   | "upcoming"
-  | "actors";
+  | "actors"
+  | "tvPopular";
 
 const titles: Record<ListKind, string> = {
   popular: "Recommended Movies",
@@ -19,6 +20,7 @@ const titles: Record<ListKind, string> = {
   nowPlaying: "Now Playing",
   upcoming: "Coming Soon",
   actors: "Top Actors",
+  tvPopular: "Popular Series",
 };
 
 interface Props {
@@ -26,6 +28,7 @@ interface Props {
   onBack: () => void;
   onMovieClick: (m: Movie) => void;
   onActorClick: (a: Actor) => void;
+  onTvClick?: (m: Movie) => void;
 }
 
 const MAX_PAGES = 5;
