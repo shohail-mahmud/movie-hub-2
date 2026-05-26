@@ -204,7 +204,7 @@ export default function App() {
             </div>
 
             {/* APIs / Tech */}
-            <div>
+            <div className="hidden sm:block">
               <h4 className="mb-3 text-sm font-bold text-white">Powered By</h4>
               <ul className="space-y-1.5 text-xs text-neutral-400">
                 <li>
