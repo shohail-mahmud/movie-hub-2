@@ -13,7 +13,7 @@ import { ListKey } from "@/lib/userLists";
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
-  | { type: "watch"; id: number }
+  | { type: "watch"; id: number; mediaType?: "movie" | "tv" }
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
   | { type: "list"; kind: ListKind; navKey?: string }
@@ -23,7 +23,7 @@ type View =
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
   movies: { sub: "Recommended" },
-  series: { sub: "New" },
+  series: { list: "tvPopular" },
   live: { sub: "Trending" },
   categories: { scroll: "categories" },
   channels: { scroll: "categories" },
@@ -91,7 +91,9 @@ export default function App() {
       ? view.navKey
       : "";
 
-  const onWatch = (movieId: number) => navigate({ type: "watch", id: movieId });
+  const onWatch = (movieId: number, mediaType: "movie" | "tv" = "movie") =>
+    navigate({ type: "watch", id: movieId, mediaType });
+  const onTvClick = (m: Movie) => navigate({ type: "watch", id: m.id, mediaType: "tv" });
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-neutral-950 text-white">
@@ -122,6 +124,7 @@ export default function App() {
           onBack={goBack}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onTvClick={onTvClick}
         />
       )}
 
@@ -138,6 +141,7 @@ export default function App() {
       {view.type === "watch" && (
         <WatchPage
           movieId={view.id}
+          mediaType={view.mediaType ?? "movie"}
           onBack={goBack}
           onActorClick={onActorClick}
           onMovieClick={onMovieClick}
@@ -177,12 +181,14 @@ export default function App() {
                 thousands of titles in HD without ads, accounts, or paywalls. Built for
                 cinema lovers.
               </p>
-              <button
-                onClick={() => navigate({ type: "about" })}
-                className="mt-3 text-xs font-semibold text-amber-400 hover:text-amber-300"
-              >
-                Learn more →
-              </button>
+              {view.type !== "about" && (
+                <button
+                  onClick={() => navigate({ type: "about" })}
+                  className="mt-3 text-xs font-semibold text-amber-400 hover:text-amber-300"
+                >
+                  Learn more →
+                </button>
+              )}
             </div>
 
             {/* Browse */}
@@ -198,7 +204,7 @@ export default function App() {
             </div>
 
             {/* APIs / Tech */}
-            <div>
+            <div className="hidden sm:block">
               <h4 className="mb-3 text-sm font-bold text-white">Powered By</h4>
               <ul className="space-y-1.5 text-xs text-neutral-400">
                 <li>
@@ -219,7 +225,7 @@ export default function App() {
             </div>
 
             {/* Credit */}
-            <div>
+            <div className="hidden sm:block">
               <h4 className="mb-3 text-sm font-bold text-white">Crafted By</h4>
               <p className="mb-3 text-xs text-neutral-400">
                 Designed &amp; built by <span className="font-semibold text-white">Shohail Mahmud</span>

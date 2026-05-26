@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Movie, Actor, tmdb, backdropUrl, profileUrl, posterUrl } from "../api/tmdb";
+import { Movie, Actor, tmdb, backdropUrl, profileUrl, posterUrl, TvDetails } from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
 import { userLists } from "@/lib/userLists";
 
+export type MediaType = "movie" | "tv";
+
 interface WatchPageProps {
   movieId: number;
+  mediaType?: MediaType;
   onBack: () => void;
   onActorClick: (actor: Actor) => void;
   onMovieClick: (movie: Movie) => void;
@@ -23,33 +26,60 @@ interface Data extends Movie {
   cast: CastMember[];
   recommendations: Movie[];
   similar: Movie[];
+  // TV only
+  seasons?: TvDetails["seasons"];
+  number_of_seasons?: number;
 }
 
 const API_KEY = "8265bd1679663a7ea12ac168da84d2e8";
 
-export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick }: WatchPageProps) {
+export default function WatchPage({ movieId, mediaType = "movie", onBack, onActorClick, onMovieClick }: WatchPageProps) {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
   const [inList, setInList] = useState(false);
+  const [season, setSeason] = useState(1);
+  const [episode, setEpisode] = useState(1);
+  const isTv = mediaType === "tv";
 
   useEffect(() => {
     setLoading(true);
+    setSeason(1);
+    setEpisode(1);
     window.scrollTo(0, 0);
     (async () => {
-      const [details, credits, recs, sim] = await Promise.all([
-        tmdb.movieDetails(movieId),
-        fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`).then((r) => r.json()),
-        fetch(`https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${API_KEY}`).then((r) => r.json()),
-        fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}`).then((r) => r.json()),
-      ]);
-      setData({
-        ...details,
-        cast: credits.cast?.slice(0, 12) ?? [],
-        recommendations: recs.results?.filter((m: Movie) => m.poster_path).slice(0, 12) ?? [],
-        similar: sim.results?.filter((m: Movie) => m.poster_path).slice(0, 8) ?? [],
-      });
+      if (isTv) {
+        const [details, credits, recs] = await Promise.all([
+          tmdb.tvDetails(movieId),
+          tmdb.tvCredits(movieId),
+          tmdb.tvRecommendations(movieId),
+        ]);
+        // Default to first non-special season
+        const firstSeason = details.seasons.find((s) => s.season_number > 0) ?? details.seasons[0];
+        if (firstSeason) setSeason(firstSeason.season_number);
+        setData({
+          ...details,
+          cast: credits.cast?.slice(0, 12) ?? [],
+          recommendations: recs.results?.filter((m: Movie) => m.poster_path).slice(0, 12) ?? [],
+          similar: [],
+          seasons: details.seasons,
+          number_of_seasons: details.number_of_seasons,
+        });
+      } else {
+        const [details, credits, recs, sim] = await Promise.all([
+          tmdb.movieDetails(movieId),
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`).then((r) => r.json()),
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${API_KEY}`).then((r) => r.json()),
+          fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}`).then((r) => r.json()),
+        ]);
+        setData({
+          ...details,
+          cast: credits.cast?.slice(0, 12) ?? [],
+          recommendations: recs.results?.filter((m: Movie) => m.poster_path).slice(0, 12) ?? [],
+          similar: sim.results?.filter((m: Movie) => m.poster_path).slice(0, 8) ?? [],
+        });
+      }
     })().finally(() => setLoading(false));
-  }, [movieId]);
+  }, [movieId, isTv]);
 
   useEffect(() => {
     if (data) {
@@ -70,6 +100,13 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
   const year = data.release_date?.slice(0, 4);
   const ratingColor = rating >= 70 ? "text-green-400" : rating >= 50 ? "text-amber-400" : "text-red-400";
 
+  const currentSeason = data.seasons?.find((s) => s.season_number === season);
+  const episodeCount = currentSeason?.episode_count ?? 1;
+
+  const embedSrc = isTv
+    ? `https://www.vidking.net/embed/tv/${movieId}/${season}/${episode}?color=f59e0b&autoPlay=true&nextEpisode=true&episodeSelector=true`
+    : `https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`;
+
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
       {/* Top bar */}
@@ -81,16 +118,19 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
             </svg>
             Back
           </button>
-          <p className="truncate text-xs text-neutral-500 sm:text-sm">Now Watching — <span className="text-neutral-300">{data.title}</span></p>
+          <p className="truncate text-xs text-neutral-500 sm:text-sm">
+            Now Watching — <span className="text-neutral-300">{data.title}</span>
+            {isTv && <span className="text-neutral-500"> · S{season}·E{episode}</span>}
+          </p>
         </div>
       </div>
 
       {/* Player */}
       <div className="bg-black">
         <div className="mx-auto max-w-[960px] px-0 sm:px-4 sm:py-4">
-          <div className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
+          <div key={`${season}-${episode}`} className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
             <iframe
-              src={`https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`}
+              src={embedSrc}
               title={data.title}
               allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
               allowFullScreen
@@ -100,6 +140,56 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
           </div>
         </div>
       </div>
+
+      {/* Season / Episode selector */}
+      {isTv && data.seasons && data.seasons.length > 0 && (
+        <div className="border-b border-neutral-800 bg-neutral-950">
+          <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-3 py-3 sm:px-4">
+            <label className="flex items-center gap-2 text-xs text-neutral-400">
+              <span className="font-semibold uppercase tracking-wider text-neutral-500">Season</span>
+              <select
+                value={season}
+                onChange={(e) => { setSeason(Number(e.target.value)); setEpisode(1); }}
+                className="border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm text-white focus:border-amber-500 focus:outline-none"
+              >
+                {data.seasons.filter((s) => s.season_number > 0).map((s) => (
+                  <option key={s.season_number} value={s.season_number}>
+                    {s.name} ({s.episode_count} ep)
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-2 text-xs text-neutral-400">
+              <span className="font-semibold uppercase tracking-wider text-neutral-500">Episode</span>
+              <select
+                value={episode}
+                onChange={(e) => setEpisode(Number(e.target.value))}
+                className="border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm text-white focus:border-amber-500 focus:outline-none"
+              >
+                {Array.from({ length: episodeCount }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>Episode {n}</option>
+                ))}
+              </select>
+            </label>
+            <div className="ml-auto flex gap-2">
+              <button
+                disabled={episode <= 1}
+                onClick={() => setEpisode((e) => Math.max(1, e - 1))}
+                className="border border-neutral-700 px-3 py-1.5 text-xs text-neutral-200 transition hover:border-amber-500 hover:text-amber-400 disabled:opacity-40"
+              >
+                ← Prev
+              </button>
+              <button
+                disabled={episode >= episodeCount}
+                onClick={() => setEpisode((e) => Math.min(episodeCount, e + 1))}
+                className="bg-amber-500 px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-amber-400 disabled:opacity-40"
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero / metadata */}
       <div className="relative overflow-hidden border-b border-neutral-800">
@@ -120,7 +210,7 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
           />
           <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap gap-1.5">
-              <span className="bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black">HD</span>
+              <span className="bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black">{isTv ? "Series" : "HD"}</span>
               {data.genres?.map((g) => (
                 <span key={g.id} className="border border-neutral-600 px-2 py-0.5 text-[10px] uppercase tracking-wider text-neutral-300">{g.name}</span>
               ))}
@@ -129,7 +219,8 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-400 sm:text-sm">
               <span className={`text-lg font-bold ${ratingColor}`}>{rating}%</span>
               <span>{year}</span>
-              {data.runtime ? <span>{Math.floor(data.runtime / 60)}h {data.runtime % 60}m</span> : null}
+              {isTv && data.number_of_seasons ? <span>{data.number_of_seasons} season{data.number_of_seasons > 1 ? "s" : ""}</span> : null}
+              {!isTv && data.runtime ? <span>{Math.floor(data.runtime / 60)}h {data.runtime % 60}m</span> : null}
               <span>{data.vote_count.toLocaleString()} votes</span>
             </div>
             <p className="text-sm leading-relaxed text-neutral-300 sm:max-w-2xl">{data.overview}</p>
@@ -146,9 +237,6 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
               </button>
               <button className="border border-white/40 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 sm:text-sm">
                 Share
-              </button>
-              <button className="border border-white/40 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 sm:text-sm">
-                Report
               </button>
             </div>
           </div>
@@ -206,29 +294,6 @@ export default function WatchPage({ movieId, onBack, onActorClick, onMovieClick 
             </div>
           </section>
         )}
-
-        {/* Comments placeholder */}
-        <section>
-          <h2 className="mb-4 text-base font-bold sm:text-lg">
-            <span className="border-l-4 border-amber-500 pl-3">Comments</span>
-          </h2>
-          <div className="border border-neutral-800 bg-neutral-900 p-4">
-            <div className="flex gap-3">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-neutral-800" />
-              <textarea
-                placeholder="Share what you thought about this movie..."
-                rows={2}
-                className="min-w-0 flex-1 resize-none border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-amber-500 focus:outline-none"
-              />
-            </div>
-            <div className="mt-3 flex justify-end">
-              <button className="bg-amber-500 px-4 py-1.5 text-xs font-semibold text-black transition hover:bg-amber-400">
-                Post comment
-              </button>
-            </div>
-            <p className="mt-4 text-center text-xs text-neutral-500">Be the first to comment.</p>
-          </div>
-        </section>
 
         {/* Similar */}
         {data.similar.length > 0 && (

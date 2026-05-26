@@ -10,7 +10,8 @@ export type ListKind =
   | "topRated"
   | "nowPlaying"
   | "upcoming"
-  | "actors";
+  | "actors"
+  | "tvPopular";
 
 const titles: Record<ListKind, string> = {
   popular: "Recommended Movies",
@@ -19,6 +20,7 @@ const titles: Record<ListKind, string> = {
   nowPlaying: "Now Playing",
   upcoming: "Coming Soon",
   actors: "Top Actors",
+  tvPopular: "Popular Series",
 };
 
 interface Props {
@@ -26,11 +28,13 @@ interface Props {
   onBack: () => void;
   onMovieClick: (m: Movie) => void;
   onActorClick: (a: Actor) => void;
+  onTvClick?: (m: Movie) => void;
 }
 
 const MAX_PAGES = 5;
 
-export default function ListPage({ kind, onBack, onMovieClick, onActorClick }: Props) {
+export default function ListPage({ kind, onBack, onMovieClick, onActorClick, onTvClick }: Props) {
+  const handleMovie = (m: Movie) => (kind === "tvPopular" && onTvClick ? onTvClick(m) : onMovieClick(m));
   const [movies, setMovies] = useState<Movie[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
   const [page, setPage] = useState(1);
@@ -57,6 +61,8 @@ export default function ListPage({ kind, onBack, onMovieClick, onActorClick }: P
       case "nowPlaying": return tmdb.nowPlaying(p);
       case "upcoming": return tmdb.upcoming(p);
       case "actors": return tmdb.popularActors(p);
+      case "tvPopular": return tmdb.popularTv(p);
+      default: return tmdb.popular(p);
     }
   };
 
@@ -110,7 +116,7 @@ export default function ListPage({ kind, onBack, onMovieClick, onActorClick }: P
           <>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5">
               {movies.map((m) => (
-                <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
+                <MovieCard key={m.id} movie={m} onClick={handleMovie} />
               ))}
             </div>
             {loading && movies.length === 0 && <MovieGridSkeleton count={10} />}
