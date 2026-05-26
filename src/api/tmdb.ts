@@ -56,6 +56,44 @@ export interface Genre {
   name: string;
 }
 
+// Normalize a TV show into the Movie shape so existing cards/pages can render it.
+interface RawTv {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  overview: string;
+  first_air_date: string;
+  vote_average: number;
+  vote_count: number;
+  popularity: number;
+  genre_ids?: number[];
+  genres?: { id: number; name: string }[];
+  number_of_seasons?: number;
+  seasons?: { season_number: number; episode_count: number; name: string; air_date: string | null }[];
+}
+
+export function tvToMovie(t: RawTv): Movie {
+  return {
+    id: t.id,
+    title: t.name,
+    poster_path: t.poster_path,
+    backdrop_path: t.backdrop_path,
+    overview: t.overview,
+    release_date: t.first_air_date,
+    vote_average: t.vote_average,
+    vote_count: t.vote_count,
+    popularity: t.popularity,
+    genre_ids: t.genre_ids,
+    genres: t.genres,
+  };
+}
+
+export interface TvDetails extends Movie {
+  number_of_seasons: number;
+  seasons: { season_number: number; episode_count: number; name: string; air_date: string | null }[];
+}
+
 export const tmdb = {
   trending: (page = 1) => get<Paged<Movie>>("/trending/movie/week", { page: String(page) }),
   popular: (page = 1) => get<Paged<Movie>>("/movie/popular", { page: String(page) }),
@@ -72,4 +110,27 @@ export const tmdb = {
     get<Paged<Movie>>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc", page: String(page) }),
   search: (query: string, page = 1) => get<Paged<Movie>>("/search/movie", { query, page: String(page) }),
   searchActors: (query: string, page = 1) => get<Paged<Actor>>("/search/person", { query, page: String(page) }),
+
+  // TV
+  popularTv: async (page = 1) => {
+    const r = await get<Paged<RawTv>>("/tv/popular", { page: String(page) });
+    return { ...r, results: r.results.map(tvToMovie) };
+  },
+  trendingTv: async (page = 1) => {
+    const r = await get<Paged<RawTv>>("/trending/tv/week", { page: String(page) });
+    return { ...r, results: r.results.map(tvToMovie) };
+  },
+  topRatedTv: async (page = 1) => {
+    const r = await get<Paged<RawTv>>("/tv/top_rated", { page: String(page) });
+    return { ...r, results: r.results.map(tvToMovie) };
+  },
+  tvDetails: async (id: number): Promise<TvDetails> => {
+    const t = await get<RawTv>(`/tv/${id}`);
+    return { ...tvToMovie(t), number_of_seasons: t.number_of_seasons ?? 1, seasons: t.seasons ?? [] };
+  },
+  tvRecommendations: async (id: number) => {
+    const r = await get<Paged<RawTv>>(`/tv/${id}/recommendations`);
+    return { ...r, results: r.results.map(tvToMovie) };
+  },
+  tvCredits: (id: number) => get<{ cast: { id: number; name: string; character: string; profile_path: string | null; known_for_department: string; popularity: number }[] }>(`/tv/${id}/credits`),
 };
