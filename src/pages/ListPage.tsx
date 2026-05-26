@@ -61,6 +61,8 @@ export default function ListPage({ kind, onBack, onMovieClick, onActorClick, onT
       case "nowPlaying": return tmdb.nowPlaying(p);
       case "upcoming": return tmdb.upcoming(p);
       case "actors": return tmdb.popularActors(p);
+      case "tvPopular": return tmdb.popularTv(p);
+      default: return tmdb.popular(p);
     }
   };
 
