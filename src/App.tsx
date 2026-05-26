@@ -124,6 +124,7 @@ export default function App() {
           onBack={goBack}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onTvClick={onTvClick}
         />
       )}
 
@@ -140,6 +141,7 @@ export default function App() {
       {view.type === "watch" && (
         <WatchPage
           movieId={view.id}
+          mediaType={view.mediaType ?? "movie"}
           onBack={goBack}
           onActorClick={onActorClick}
           onMovieClick={onMovieClick}
