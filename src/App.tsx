@@ -13,7 +13,7 @@ import { ListKey } from "@/lib/userLists";
 type View =
   | { type: "home" }
   | { type: "movie"; id: number }
-  | { type: "watch"; id: number }
+  | { type: "watch"; id: number; mediaType?: "movie" | "tv" }
   | { type: "actor"; id: number }
   | { type: "search"; query: string; category: SearchCategory }
   | { type: "list"; kind: ListKind; navKey?: string }
@@ -23,7 +23,7 @@ type View =
 const navMap: Record<string, { sub?: string; scroll?: "actors" | "categories"; list?: ListKind }> = {
   home: {},
   movies: { sub: "Recommended" },
-  series: { sub: "New" },
+  series: { list: "tvPopular" },
   live: { sub: "Trending" },
   categories: { scroll: "categories" },
   channels: { scroll: "categories" },
