@@ -116,7 +116,7 @@ export default function ListPage({ kind, onBack, onMovieClick, onActorClick, onT
           <>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5">
               {movies.map((m) => (
-                <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
+                <MovieCard key={m.id} movie={m} onClick={handleMovie} />
               ))}
             </div>
             {loading && movies.length === 0 && <MovieGridSkeleton count={10} />}
