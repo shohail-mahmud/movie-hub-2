@@ -225,7 +225,7 @@ export default function App() {
             </div>
 
             {/* Credit */}
-            <div>
+            <div className="hidden sm:block">
               <h4 className="mb-3 text-sm font-bold text-white">Crafted By</h4>
               <p className="mb-3 text-xs text-neutral-400">
                 Designed &amp; built by <span className="font-semibold text-white">Shohail Mahmud</span>
