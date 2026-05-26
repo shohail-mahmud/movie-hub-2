@@ -33,7 +33,8 @@ interface Props {
 
 const MAX_PAGES = 5;
 
-export default function ListPage({ kind, onBack, onMovieClick, onActorClick }: Props) {
+export default function ListPage({ kind, onBack, onMovieClick, onActorClick, onTvClick }: Props) {
+  const handleMovie = (m: Movie) => (kind === "tvPopular" && onTvClick ? onTvClick(m) : onMovieClick(m));
   const [movies, setMovies] = useState<Movie[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
   const [page, setPage] = useState(1);
