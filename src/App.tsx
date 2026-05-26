@@ -91,7 +91,9 @@ export default function App() {
       ? view.navKey
       : "";
 
-  const onWatch = (movieId: number) => navigate({ type: "watch", id: movieId });
+  const onWatch = (movieId: number, mediaType: "movie" | "tv" = "movie") =>
+    navigate({ type: "watch", id: movieId, mediaType });
+  const onTvClick = (m: Movie) => navigate({ type: "watch", id: m.id, mediaType: "tv" });
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-neutral-950 text-white">
