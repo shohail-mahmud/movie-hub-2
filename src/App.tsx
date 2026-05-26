@@ -181,12 +181,14 @@ export default function App() {
                 thousands of titles in HD without ads, accounts, or paywalls. Built for
                 cinema lovers.
               </p>
-              <button
-                onClick={() => navigate({ type: "about" })}
-                className="mt-3 text-xs font-semibold text-amber-400 hover:text-amber-300"
-              >
-                Learn more →
-              </button>
+              {view.type !== "about" && (
+                <button
+                  onClick={() => navigate({ type: "about" })}
+                  className="mt-3 text-xs font-semibold text-amber-400 hover:text-amber-300"
+                >
+                  Learn more →
+                </button>
+              )}
             </div>
 
             {/* Browse */}
