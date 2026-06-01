@@ -1,12 +1,15 @@
+import { useEffect, useState } from "react";
 import { Movie, backdropUrl, posterUrl } from "../api/tmdb";
+import { userLists } from "@/lib/userLists";
 
 interface HeroProps {
   movie: Movie;
   genres: { id: number; name: string }[];
   onPlay: (movie: Movie) => void;
+  onInfo: (movie: Movie) => void;
 }
 
-export default function HeroSection({ movie, genres, onPlay }: HeroProps) {
+export default function HeroSection({ movie, genres, onPlay, onInfo }: HeroProps) {
   const movieGenres = (movie.genre_ids ?? [])
     .map((id) => genres.find((g) => g.id === id)?.name)
     .filter(Boolean)
@@ -14,6 +17,16 @@ export default function HeroSection({ movie, genres, onPlay }: HeroProps) {
 
   const rating = Math.round(movie.vote_average * 10);
   const year = movie.release_date?.slice(0, 4);
+
+  const [inList, setInList] = useState(false);
+  useEffect(() => {
+    setInList(userLists.has("watchlist", movie.id));
+  }, [movie.id]);
+
+  const toggleList = () => {
+    userLists.toggle("watchlist", movie);
+    setInList(userLists.has("watchlist", movie.id));
+  };
 
   return (
     <div className="relative w-full overflow-hidden" style={{ height: "520px" }}>
@@ -60,6 +73,7 @@ export default function HeroSection({ movie, genres, onPlay }: HeroProps) {
             </div>
 
             <div className="flex flex-wrap gap-3 pt-1">
+              {/* Watch Now → player */}
               <button
                 onClick={() => onPlay(movie)}
                 className="flex items-center gap-2 bg-amber-500 px-6 py-2.5 text-sm font-bold text-black transition hover:bg-amber-400"
@@ -69,13 +83,33 @@ export default function HeroSection({ movie, genres, onPlay }: HeroProps) {
                 </svg>
                 Watch Now
               </button>
-              <button className="flex items-center gap-2 border border-white/40 px-6 py-2.5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
-                  <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                </svg>
-                My List
+
+              {/* My List → toggle watchlist */}
+              <button
+                onClick={toggleList}
+                className={`flex items-center gap-2 px-6 py-2.5 text-sm font-semibold transition ${
+                  inList
+                    ? "bg-white/15 text-white border border-white"
+                    : "border border-white/40 text-white hover:border-white hover:bg-white/10"
+                }`}
+              >
+                {inList ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                    <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                  </svg>
+                )}
+                {inList ? "In My List" : "My List"}
               </button>
-              <button className="flex items-center gap-2 border border-white/20 px-4 py-2.5 text-sm text-neutral-300 transition hover:border-white/40 hover:text-white">
+
+              {/* More Info → detail page */}
+              <button
+                onClick={() => onInfo(movie)}
+                className="flex items-center gap-2 border border-white/20 px-4 py-2.5 text-sm text-neutral-300 transition hover:border-white/40 hover:text-white"
+              >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
                   <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" strokeLinecap="round" />
                 </svg>
