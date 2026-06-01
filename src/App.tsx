@@ -97,6 +97,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+      <ConsentGate />
       <Header
         onSearch={onSearch}
         onNav={onNav}
