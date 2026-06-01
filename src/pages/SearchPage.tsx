@@ -9,14 +9,16 @@ interface SearchPageProps {
   category: SearchCategory;
   onMovieClick: (movie: Movie) => void;
   onActorClick: (actor: Actor) => void;
+  onTvClick?: (movie: Movie) => void;
 }
 
-export default function SearchPage({ query, category, onMovieClick, onActorClick }: SearchPageProps) {
+export default function SearchPage({ query, category, onMovieClick, onActorClick, onTvClick }: SearchPageProps) {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
   const [loading, setLoading] = useState(true);
 
   const isActors = category === "Stars";
+  const isSeries = category === "Series";
 
   useEffect(() => {
     setLoading(true);
