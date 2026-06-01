@@ -27,8 +27,8 @@ export default function ConsentGate() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black px-4 py-10">
-      <div className="relative flex w-full max-w-xl flex-col items-center text-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/80 backdrop-blur-sm px-4 py-6">
+      <div className="relative flex w-full max-w-md flex-col items-center rounded-xl border border-neutral-800 bg-neutral-950 px-6 py-8 text-center shadow-2xl shadow-black sm:px-8 sm:py-10">
         {/* Logo */}
         <div className="mb-8 flex items-center text-3xl sm:text-4xl font-black tracking-tight">
           <span className="text-white">Movie</span>
