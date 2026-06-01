@@ -40,6 +40,10 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           const res = await tmdb.searchActors(q);
           setActorSugs(res.results.filter((a) => a.profile_path).slice(0, 6));
           setMovieSugs([]);
+        } else if (category === "Series") {
+          const res = await tmdb.searchTv(q);
+          setMovieSugs(res.results.filter((m) => m.poster_path).slice(0, 6));
+          setActorSugs([]);
         } else {
           const res = await tmdb.search(q);
           setMovieSugs(res.results.filter((m) => m.poster_path).slice(0, 6));
