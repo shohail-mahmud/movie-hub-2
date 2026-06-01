@@ -55,6 +55,7 @@ export default function HomePage({
   const actorsRef = useRef<HTMLElement | null>(null);
   const categoriesRef = useRef<HTMLDivElement | null>(null);
   const subRef = useRef<HTMLDivElement | null>(null);
+  const genreResultsRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
