@@ -306,7 +306,8 @@ export default function HomePage({
 
           {/* Genre movies */}
           {activeGenre !== null && genreMovies.length > 0 && (
-            <section>
+            <section ref={genreResultsRef} className="scroll-mt-20">
+
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-base font-bold sm:text-lg">
                   <span className="border-l-4 border-amber-500 pl-3">
