@@ -110,6 +110,10 @@ export const tmdb = {
     get<Paged<Movie>>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc", page: String(page) }),
   search: (query: string, page = 1) => get<Paged<Movie>>("/search/movie", { query, page: String(page) }),
   searchActors: (query: string, page = 1) => get<Paged<Actor>>("/search/person", { query, page: String(page) }),
+  searchTv: async (query: string, page = 1) => {
+    const r = await get<Paged<RawTv>>("/search/tv", { query, page: String(page) });
+    return { ...r, results: r.results.map(tvToMovie) };
+  },
 
   // TV
   popularTv: async (page = 1) => {
