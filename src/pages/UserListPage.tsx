@@ -79,12 +79,16 @@ export default function UserListPage({ kind, onBack, onMovieClick }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5 xl:grid-cols-6">
             {items.map((m) => (
-              <div key={m.id} className="relative">
+              <div key={m.id} className="group relative">
                 <MovieCard movie={m as unknown as Movie} onClick={(mv) => onMovieClick(mv)} />
                 <button
-                  onClick={(e) => { e.stopPropagation(); userLists.remove(kind, m.id); }}
-                  className="absolute right-1.5 top-1.5 z-10 h-7 w-7 items-center justify-center bg-black/80 text-white opacity-0 transition hover:bg-red-500 group-hover:opacity-100 flex"
-                  aria-label="Remove"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const label = kind === "history" ? "Remove from watch history?" : "Remove from watchlist?";
+                    if (confirm(`${label}\n\n${m.title}`)) userLists.remove(kind, m.id);
+                  }}
+                  className="absolute right-1.5 top-1.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/85 text-white shadow-lg backdrop-blur transition hover:border-red-500 hover:bg-red-500 sm:opacity-0 sm:group-hover:opacity-100"
+                  aria-label={`Remove ${m.title}`}
                   title="Remove"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-3.5 w-3.5">
