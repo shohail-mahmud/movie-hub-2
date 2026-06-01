@@ -114,6 +114,7 @@ export default function App() {
         <HomePage
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onWatch={onWatch}
           onSeeAll={(kind) => navigate({ type: "list", kind })}
           subTab={homeSubTab}
           scrollTarget={homeScroll}
