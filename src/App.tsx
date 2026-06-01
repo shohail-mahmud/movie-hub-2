@@ -9,6 +9,7 @@ import ListPage, { ListKind } from "@/pages/ListPage";
 import WatchPage from "@/pages/WatchPage";
 import UserListPage from "@/pages/UserListPage";
 import { ListKey } from "@/lib/userLists";
+import ConsentGate from "@/components/ConsentGate";
 
 type View =
   | { type: "home" }
@@ -97,6 +98,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+      <ConsentGate />
       <Header
         onSearch={onSearch}
         onNav={onNav}
