@@ -13,6 +13,7 @@ import type { ListKind } from "./ListPage";
 interface HomePageProps {
   onMovieClick: (movie: Movie) => void;
   onActorClick: (actor: Actor) => void;
+  onWatch: (movieId: number, mediaType?: "movie" | "tv") => void;
   onSeeAll: (kind: ListKind) => void;
   subTab?: string;
   scrollTarget?: "actors" | "categories" | null;
@@ -33,6 +34,7 @@ const subKindMap: Record<string, ListKind> = {
 export default function HomePage({
   onMovieClick,
   onActorClick,
+  onWatch,
   onSeeAll,
   subTab,
   scrollTarget,
@@ -135,7 +137,12 @@ export default function HomePage({
     <div className="min-h-screen bg-neutral-950 text-white">
       {/* Hero */}
       {heroMovie ? (
-        <HeroSection movie={heroMovie} genres={genres} onPlay={onMovieClick} />
+        <HeroSection
+          movie={heroMovie}
+          genres={genres}
+          onPlay={(m) => onWatch(m.id, "movie")}
+          onInfo={onMovieClick}
+        />
       ) : (
         <div className="aspect-[16/9] w-full animate-pulse bg-neutral-900 sm:aspect-[21/9]" />
       )}
