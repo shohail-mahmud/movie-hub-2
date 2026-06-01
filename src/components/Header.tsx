@@ -11,11 +11,12 @@ interface HeaderProps {
   activePage: string;
   onMovieClick?: (movie: Movie) => void;
   onActorClick?: (actor: Actor) => void;
+  onTvClick?: (movie: Movie) => void;
   onOpenWatchlist?: () => void;
   onOpenHistory?: () => void;
 }
 
-export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick, onOpenWatchlist, onOpenHistory }: HeaderProps) {
+export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick, onTvClick, onOpenWatchlist, onOpenHistory }: HeaderProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<SearchCategory>("Movies");
   const [movieSugs, setMovieSugs] = useState<Movie[]>([]);
@@ -39,6 +40,10 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
           const res = await tmdb.searchActors(q);
           setActorSugs(res.results.filter((a) => a.profile_path).slice(0, 6));
           setMovieSugs([]);
+        } else if (category === "Series") {
+          const res = await tmdb.searchTv(q);
+          setMovieSugs(res.results.filter((m) => m.poster_path).slice(0, 6));
+          setActorSugs([]);
         } else {
           const res = await tmdb.search(q);
           setMovieSugs(res.results.filter((m) => m.poster_path).slice(0, 6));
@@ -146,7 +151,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => { setOpen(false); setQuery(""); onMovieClick?.(m); }}
+                    onClick={() => { setOpen(false); setQuery(""); if (category === "Series") { onTvClick?.(m); } else { onMovieClick?.(m); } }}
                     className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-neutral-800"
                   >
                     <img src={posterUrl(m.poster_path, "w92")} alt={m.title} className="h-12 w-8 shrink-0 rounded-sm object-cover" />

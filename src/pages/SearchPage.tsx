@@ -9,14 +9,16 @@ interface SearchPageProps {
   category: SearchCategory;
   onMovieClick: (movie: Movie) => void;
   onActorClick: (actor: Actor) => void;
+  onTvClick?: (movie: Movie) => void;
 }
 
-export default function SearchPage({ query, category, onMovieClick, onActorClick }: SearchPageProps) {
+export default function SearchPage({ query, category, onMovieClick, onActorClick, onTvClick }: SearchPageProps) {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
   const [loading, setLoading] = useState(true);
 
   const isActors = category === "Stars";
+  const isSeries = category === "Series";
 
   useEffect(() => {
     setLoading(true);
@@ -39,6 +41,14 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
               setMovies([]);
               return;
             }
+          } else if (isSeries) {
+            const res = await tmdb.searchTv(q);
+            const filtered = res.results.filter((m) => m.poster_path);
+            if (filtered.length > 0) {
+              setMovies(filtered);
+              setActors([]);
+              return;
+            }
           } else {
             const res = await tmdb.search(q);
             const filtered = res.results.filter((m) => m.poster_path);
@@ -48,6 +58,7 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
               return;
             }
           }
+
         } catch {
           // continue
         }
@@ -56,7 +67,7 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
       setActors([]);
     };
     run().finally(() => setLoading(false));
-  }, [query, category, isActors]);
+  }, [query, category, isActors, isSeries]);
 
   const count = isActors ? actors.length : movies.length;
   const label = isActors ? "actors" : "movies";
@@ -89,7 +100,7 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {movies.map((m) => (
-              <MovieCard key={m.id} movie={m} onClick={onMovieClick} />
+              <MovieCard key={m.id} movie={m} onClick={isSeries ? (onTvClick ?? onMovieClick) : onMovieClick} />
             ))}
           </div>
         )}

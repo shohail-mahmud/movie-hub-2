@@ -55,6 +55,7 @@ export default function HomePage({
   const actorsRef = useRef<HTMLElement | null>(null);
   const categoriesRef = useRef<HTMLDivElement | null>(null);
   const subRef = useRef<HTMLDivElement | null>(null);
+  const genreResultsRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -83,7 +84,12 @@ export default function HomePage({
     if (activeGenre !== null) {
       tmdb.moviesByGenre(activeGenre).then((res) => {
         setGenreMovies(res.results.filter((m) => m.poster_path));
+        setTimeout(() => {
+          genreResultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50);
       });
+    } else {
+      setGenreMovies([]);
     }
   }, [activeGenre]);
 
@@ -300,7 +306,8 @@ export default function HomePage({
 
           {/* Genre movies */}
           {activeGenre !== null && genreMovies.length > 0 && (
-            <section>
+            <section ref={genreResultsRef} className="scroll-mt-20">
+
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-base font-bold sm:text-lg">
                   <span className="border-l-4 border-amber-500 pl-3">

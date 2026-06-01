@@ -105,6 +105,7 @@ export default function App() {
         activePage={activePage}
         onMovieClick={onMovieClick}
         onActorClick={onActorClick}
+        onTvClick={onTvClick}
         onOpenWatchlist={() => navigate({ type: "userlist", kind: "watchlist" })}
         onOpenHistory={() => navigate({ type: "userlist", kind: "history" })}
       />
@@ -160,6 +161,7 @@ export default function App() {
           category={view.category}
           onMovieClick={onMovieClick}
           onActorClick={onActorClick}
+          onTvClick={onTvClick}
         />
       )}
 
