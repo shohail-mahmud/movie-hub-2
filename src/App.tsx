@@ -287,21 +287,6 @@ function AboutPage({ onBack }: { onBack: () => void }) {
           rights belong to their respective owners.
         </p>
 
-        <h2 className="mb-3 border-l-4 border-amber-500 pl-3 text-xl font-bold">Crafted by</h2>
-        <div className="rounded-sm border border-neutral-800 bg-neutral-900/60 p-5">
-          <p className="text-base font-semibold text-white">Shohail Mahmud</p>
-          <p className="mb-3 text-xs text-neutral-500">Designer &amp; Developer</p>
-          <div className="flex flex-wrap gap-3">
-            <a href="https://instagram.com/shohailmahmud09" target="_blank" rel="noreferrer"
-              className="flex items-center gap-2 border border-neutral-700 px-3 py-1.5 text-xs text-neutral-200 hover:border-amber-500 hover:text-amber-400">
-              Instagram · @shohailmahmud09
-            </a>
-            <a href="https://github.com/shohail-mahmud" target="_blank" rel="noreferrer"
-              className="flex items-center gap-2 bg-amber-500 px-3 py-1.5 text-xs font-semibold text-black hover:bg-amber-400">
-              GitHub · shohail-mahmud
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );
