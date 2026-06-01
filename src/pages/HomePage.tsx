@@ -84,7 +84,12 @@ export default function HomePage({
     if (activeGenre !== null) {
       tmdb.moviesByGenre(activeGenre).then((res) => {
         setGenreMovies(res.results.filter((m) => m.poster_path));
+        setTimeout(() => {
+          genreResultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50);
       });
+    } else {
+      setGenreMovies([]);
     }
   }, [activeGenre]);
 
