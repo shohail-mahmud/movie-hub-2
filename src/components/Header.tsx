@@ -11,11 +11,12 @@ interface HeaderProps {
   activePage: string;
   onMovieClick?: (movie: Movie) => void;
   onActorClick?: (actor: Actor) => void;
+  onTvClick?: (movie: Movie) => void;
   onOpenWatchlist?: () => void;
   onOpenHistory?: () => void;
 }
 
-export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick, onOpenWatchlist, onOpenHistory }: HeaderProps) {
+export default function Header({ onSearch, onNav, activePage, onMovieClick, onActorClick, onTvClick, onOpenWatchlist, onOpenHistory }: HeaderProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<SearchCategory>("Movies");
   const [movieSugs, setMovieSugs] = useState<Movie[]>([]);
