@@ -282,6 +282,41 @@ function AboutPage({ onBack }: { onBack: () => void }) {
           <li><a className="text-amber-400 hover:underline" href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMDB</a> — all movie, series, and actor metadata, posters, and ratings</li>
           <li><a className="text-amber-400 hover:underline" href="https://www.vidking.net/" target="_blank" rel="noreferrer">Vidking</a> — embedded streaming player</li>
         </ul>
+
+        <div className="my-8 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
+
+        <h2 className="mb-3 border-l-4 border-amber-500 pl-3 text-xl font-bold">Created by</h2>
+        <p className="mb-4 text-sm text-neutral-300">
+          Designed &amp; built by{" "}
+          <span className="font-semibold text-white">Shohail Mahmud</span>.
+        </p>
+        <div className="mb-8 flex flex-wrap gap-3">
+          <a
+            href="https://instagram.com/shohailmahmud09"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition hover:border-amber-500 hover:text-amber-400"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            @shohailmahmud09
+          </a>
+          <a
+            href="https://github.com/shohail-mahmud"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition hover:border-amber-500 hover:text-amber-400"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+              <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" />
+            </svg>
+            shohail-mahmud
+          </a>
+        </div>
+
         <p className="mb-8 text-xs text-neutral-500">
           MovieHub uses the TMDB API but is not endorsed or certified by TMDB. All content
           rights belong to their respective owners.
