@@ -67,7 +67,7 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
       setActors([]);
     };
     run().finally(() => setLoading(false));
-  }, [query, category, isActors]);
+  }, [query, category, isActors, isSeries]);
 
   const count = isActors ? actors.length : movies.length;
   const label = isActors ? "actors" : "movies";
