@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const CONSENT_KEY = "mh.consent.v1";
+const CONSENT_KEY = "mh.consent.v2";
 
 export default function ConsentGate() {
   const [accepted, setAccepted] = useState<boolean | null>(null);
