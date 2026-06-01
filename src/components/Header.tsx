@@ -151,7 +151,7 @@ export default function Header({ onSearch, onNav, activePage, onMovieClick, onAc
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => { setOpen(false); setQuery(""); onMovieClick?.(m); }}
+                    onClick={() => { setOpen(false); setQuery(""); if (category === "Series") { onTvClick?.(m); } else { onMovieClick?.(m); } }}
                     className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-neutral-800"
                   >
                     <img src={posterUrl(m.poster_path, "w92")} alt={m.title} className="h-12 w-8 shrink-0 rounded-sm object-cover" />
