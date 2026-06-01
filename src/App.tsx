@@ -228,38 +228,8 @@ export default function App() {
               </p>
             </div>
 
-            {/* Credit */}
-            <div className="hidden sm:block">
-              <h4 className="mb-3 text-sm font-bold text-white">Crafted By</h4>
-              <p className="mb-3 text-xs text-neutral-400">
-                Designed &amp; built by <span className="font-semibold text-white">Shohail Mahmud</span>
-              </p>
-              <div className="flex flex-col gap-2">
-                <a
-                  href="https://instagram.com/shohailmahmud09"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-2 text-xs text-neutral-400 hover:text-amber-400"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                    <path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.5 1s.8.9 1 1.5c.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-1 1.5s-.9.8-1.5 1c-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.5-1s-.8-.9-1-1.5c-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 1-1.5s.9-.8 1.5-1c.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 5.3a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8zm5.7-7.6a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0z"/>
-                  </svg>
-                  @shohailmahmud09
-                </a>
-                <a
-                  href="https://github.com/shohail-mahmud"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-2 text-xs text-neutral-400 hover:text-amber-400"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                    <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.3 2.9.1 3.2.8.9 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.3v3.4c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/>
-                  </svg>
-                  shohail-mahmud
-                </a>
-              </div>
-            </div>
           </div>
+
 
           <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-neutral-800 pt-6 text-xs text-neutral-500 sm:flex-row">
             <p>© 2026 MovieHub. A free, ad-free fan project for movie discovery.</p>
