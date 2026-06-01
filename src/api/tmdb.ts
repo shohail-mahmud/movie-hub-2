@@ -106,6 +106,10 @@ export const tmdb = {
     get<Actor & { biography: string; birthday: string; place_of_birth: string }>(`/person/${id}`),
   actorMovies: (id: number) => get<{ cast: Movie[] }>(`/person/${id}/movie_credits`),
   movieDetails: (id: number) => get<Movie>(`/movie/${id}`),
+  movieVideos: (id: number) =>
+    get<{ results: { key: string; site: string; type: string; official: boolean }[] }>(
+      `/movie/${id}/videos`,
+    ),
   moviesByGenre: (genreId: number, page = 1) =>
     get<Paged<Movie>>("/discover/movie", { with_genres: String(genreId), sort_by: "popularity.desc", page: String(page) }),
   search: (query: string, page = 1) => get<Paged<Movie>>("/search/movie", { query, page: String(page) }),
