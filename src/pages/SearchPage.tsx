@@ -58,14 +58,7 @@ export default function SearchPage({ query, category, onMovieClick, onActorClick
               return;
             }
           }
-            const res = await tmdb.search(q);
-            const filtered = res.results.filter((m) => m.poster_path);
-            if (filtered.length > 0) {
-              setMovies(filtered);
-              setActors([]);
-              return;
-            }
-          }
+
         } catch {
           // continue
         }
