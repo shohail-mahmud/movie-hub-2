@@ -82,8 +82,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MovieHub — Watch Movies & TV in HD, Free" },
       { name: "twitter:description", content: "Discover and stream thousands of movies & TV shows in HD. Trending, top-rated, and new releases — free, ad-free, no sign-up." },
-      { property: "og:image", content: "/og-image.png" },
-      { name: "twitter:image", content: "/og-image.png" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "/og-image.jpg" },
     ],
     links: [
       {
