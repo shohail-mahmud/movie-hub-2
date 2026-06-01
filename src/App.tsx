@@ -9,6 +9,7 @@ import ListPage, { ListKind } from "@/pages/ListPage";
 import WatchPage from "@/pages/WatchPage";
 import UserListPage from "@/pages/UserListPage";
 import { ListKey } from "@/lib/userLists";
+import ConsentGate from "@/components/ConsentGate";
 
 type View =
   | { type: "home" }
