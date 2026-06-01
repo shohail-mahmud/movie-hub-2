@@ -6,7 +6,6 @@ interface MovieCardProps {
   onClick?: (movie: Movie) => void;
 }
 
-// Cache trailer keys per movie id so we don't refetch on every hover.
 const trailerCache = new Map<number, string | null>();
 
 async function fetchTrailerKey(movieId: number): Promise<string | null> {
@@ -31,9 +30,7 @@ async function fetchTrailerKey(movieId: number): Promise<string | null> {
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
   const [hovered, setHovered] = useState(false);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  // `playing` drives video opacity; toggled off after 10s or on mouse leave.
   const [playing, setPlaying] = useState(false);
-  // Bumped every time we want to fully unmount the iframe so currentTime resets to 0.
   const [iframeNonce, setIframeNonce] = useState(0);
 
   const stopTimerRef = useRef<number | null>(null);
@@ -49,34 +46,51 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
     startTimerRef.current = null;
   };
 
-  // Cleanup on unmount.
   useEffect(() => () => clearTimers(), []);
 
-  const handleEnter = () => {
+  const startPreview = (delay = 200) => {
     setHovered(true);
-    // Tiny delay so quick fly-overs don't trigger a fetch/play.
+    clearTimers();
     startTimerRef.current = window.setTimeout(async () => {
       const key = trailerKey ?? (await fetchTrailerKey(movie.id));
       if (!key) return;
       setTrailerKey(key);
-      setIframeNonce((n) => n + 1); // fresh iframe -> starts from 0
+      setIframeNonce((n) => n + 1);
       setPlaying(true);
-      // Auto-pause after exactly 10 seconds even if still hovered.
       stopTimerRef.current = window.setTimeout(() => {
         setPlaying(false);
       }, 10_000);
-    }, 200);
+    }, delay);
   };
+
+  const handleEnter = () => startPreview(200);
 
   const handleLeave = () => {
     setHovered(false);
     clearTimers();
     setPlaying(false);
-    // Force iframe unmount so the next hover begins from currentTime = 0.
     setIframeNonce((n) => n + 1);
   };
 
-  // YouTube embed URL: muted autoplay, no controls, no related videos, hidden chrome.
+  const touchStartY = useRef<number | null>(null);
+  const touchMoved = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchMoved.current = false;
+    touchStartY.current = e.touches[0]?.clientY ?? null;
+    startPreview(60);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const y = e.touches[0]?.clientY ?? null;
+    if (touchStartY.current != null && y != null && Math.abs(y - touchStartY.current) > 12) {
+      if (!touchMoved.current) {
+        touchMoved.current = true;
+        handleLeave();
+      }
+    }
+  };
+
   const embedSrc =
     trailerKey && playing
       ? `https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&modestbranding=1&playsinline=1&rel=0&showinfo=0&iv_load_policy=3&disablekb=1&fs=0`
@@ -87,10 +101,11 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
       className="group cursor-pointer"
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onClick={() => onClick?.(movie)}
     >
       <div className="relative overflow-hidden rounded-lg bg-neutral-900 shadow-lg shadow-black/40 ring-1 ring-white/5 transition-transform duration-300 ease-out group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-black/70 group-hover:ring-amber-500/30">
-        {/* Poster — fades out when the trailer starts playing. */}
         <img
           src={posterUrl(movie.poster_path)}
           alt={movie.title}
@@ -100,7 +115,6 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
           }`}
         />
 
-        {/* Video preview overlay — sits inside the card, same aspect, fades in. */}
         {embedSrc && (
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
@@ -117,7 +131,6 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
           </div>
         )}
 
-        {/* HD / TOP badges */}
         <div className="absolute left-1.5 top-1.5 z-10 flex gap-1">
           <span className="rounded-sm bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-black">
             HD
@@ -129,17 +142,14 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
           )}
         </div>
 
-        {/* Rating */}
         <span className="absolute bottom-1.5 left-1.5 z-10 rounded-sm bg-black/85 px-1.5 py-0.5 text-xs font-semibold text-amber-400">
           {rating}%
         </span>
 
-        {/* Year */}
         <span className="absolute bottom-1.5 right-1.5 z-10 rounded-sm bg-black/85 px-1.5 py-0.5 text-xs font-semibold text-neutral-300">
           {year}
         </span>
 
-        {/* Hover scrim + play icon (hidden while video is playing) */}
         <div
           className={`absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 ${
             hovered && !playing ? "opacity-100" : "opacity-0"
