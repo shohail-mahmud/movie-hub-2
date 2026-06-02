@@ -5,6 +5,66 @@ import { userLists } from "@/lib/userLists";
 
 export type MediaType = "movie" | "tv";
 
+export interface StreamSource {
+  id: string;
+  name: string;
+  getMovieUrl: (id: number) => string;
+  getTvUrl: (id: number, season: number, episode: number) => string;
+  description: string;
+}
+
+export const STREAM_SOURCES: StreamSource[] = [
+  {
+    id: "vidking",
+    name: "VidKing",
+    getMovieUrl: (id) => `https://www.vidking.net/embed/movie/${id}?color=f59e0b&autoPlay=true`,
+    getTvUrl: (id, s, e) => `https://www.vidking.net/embed/tv/${id}/${s}/${e}?color=f59e0b&autoPlay=true&nextEpisode=true&episodeSelector=true`,
+    description: "Default Server"
+  },
+  {
+    id: "vidlink",
+    name: "VidLink",
+    getMovieUrl: (id) => `https://vidlink.pro/movie/${id}?primaryColor=f59e0b`,
+    getTvUrl: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=f59e0b`,
+    description: "Fast Stream"
+  },
+  {
+    id: "vidsrc_to",
+    name: "VidSrc.to",
+    getMovieUrl: (id) => `https://vidsrc.to/embed/movie/${id}`,
+    getTvUrl: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
+    description: "Super Backup"
+  },
+  {
+    id: "vidsrc_xyz",
+    name: "VidSrc.xyz",
+    getMovieUrl: (id) => `https://vidsrc.xyz/embed/movie/${id}`,
+    getTvUrl: (id, s, e) => `https://vidsrc.xyz/embed/tv/${id}/${s}/${e}`,
+    description: "Multi-Server"
+  },
+  {
+    id: "vidsrc_me",
+    name: "VidSrc.me",
+    getMovieUrl: (id) => `https://vidsrc.me/embed/movie?tmdb=${id}`,
+    getTvUrl: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
+    description: "Classic Server"
+  },
+  {
+    id: "vidsrc_cc",
+    name: "VidSrc.cc",
+    getMovieUrl: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`,
+    getTvUrl: (id, s, e) => `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`,
+    description: "Alternative Backup"
+  },
+  {
+    id: "embed_su",
+    name: "Embed.su",
+    getMovieUrl: (id) => `https://embed.su/embed/movie/${id}`,
+    getTvUrl: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`,
+    description: "Subtitles Backup"
+  }
+];
+
 interface WatchPageProps {
   movieId: number;
   mediaType?: MediaType;
@@ -39,6 +99,7 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
   const [inList, setInList] = useState(false);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
+  const [selectedSourceId, setSelectedSourceId] = useState<string>("vidking");
   const isTv = mediaType === "tv";
 
   useEffect(() => {
@@ -103,9 +164,10 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
   const currentSeason = data.seasons?.find((s) => s.season_number === season);
   const episodeCount = currentSeason?.episode_count ?? 1;
 
+  const activeSource = STREAM_SOURCES.find((src) => src.id === selectedSourceId) ?? STREAM_SOURCES[0];
   const embedSrc = isTv
-    ? `https://www.vidking.net/embed/tv/${movieId}/${season}/${episode}?color=f59e0b&autoPlay=true&nextEpisode=true&episodeSelector=true`
-    : `https://www.vidking.net/embed/movie/${movieId}?color=f59e0b&autoPlay=true`;
+    ? activeSource.getTvUrl(movieId, season, episode)
+    : activeSource.getMovieUrl(movieId);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -128,7 +190,7 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
       {/* Player */}
       <div className="bg-black">
         <div className="mx-auto max-w-[960px] px-0 sm:px-4 sm:py-4">
-          <div key={`${season}-${episode}`} className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
+          <div key={`${selectedSourceId}-${season}-${episode}`} className="relative mx-auto w-full overflow-hidden bg-black shadow-2xl sm:rounded-sm" style={{ aspectRatio: "16 / 9" }}>
             <iframe
               src={embedSrc}
               title={data.title}
@@ -137,6 +199,47 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
               referrerPolicy="origin"
               className="absolute inset-0 h-full w-full border-0"
             />
+          </div>
+        </div>
+      </div>
+
+      {/* Server/Source Selector */}
+      <div className="border-b border-neutral-800 bg-neutral-950/60 py-4">
+        <div className="mx-auto max-w-[1400px] px-3 sm:px-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Active Server Source
+              </h3>
+              <p className="text-xs text-neutral-500">
+                If the stream is slow, broken, or not loading, try switching to a backup server.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {STREAM_SOURCES.map((src) => {
+                const isActive = src.id === selectedSourceId;
+                return (
+                  <button
+                    key={src.id}
+                    onClick={() => setSelectedSourceId(src.id)}
+                    className={`relative rounded-md px-3 py-1.5 text-xs font-semibold transition flex flex-col items-start gap-0.5 border cursor-pointer ${
+                      isActive
+                        ? "bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/15"
+                        : "bg-neutral-900 text-neutral-300 border-neutral-800 hover:border-neutral-700 hover:text-white"
+                    }`}
+                  >
+                    <span>{src.name}</span>
+                    <span className={`text-[9px] font-normal leading-none ${isActive ? "text-black/75" : "text-neutral-500"}`}>
+                      {src.description}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
