@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Movie, Actor, tmdb, backdropUrl, profileUrl, posterUrl, TvDetails } from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
 import { userLists } from "@/lib/userLists";
+import { toast } from "sonner";
 
 export type MediaType = "movie" | "tv";
 
@@ -108,6 +109,28 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
   const [episode, setEpisode] = useState(1);
   const [selectedSourceId, setSelectedSourceId] = useState<string>("vidking");
   const isTv = mediaType === "tv";
+
+  const handleShare = () => {
+    const shareData = {
+      title: data?.title ?? "MovieHub",
+      text: `Watch ${data?.title} for free on MovieHub!`,
+      url: typeof window !== "undefined" ? window.location.href : "",
+    };
+
+    if (typeof navigator !== "undefined" && navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      navigator.share(shareData)
+        .then(() => toast.success("Shared successfully!"))
+        .catch((err) => {
+          if (err.name !== "AbortError") {
+            navigator.clipboard.writeText(window.location.href);
+            toast.success("Link copied to clipboard!");
+          }
+        });
+    } else if (typeof navigator !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -345,7 +368,10 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
               >
                 {inList ? "✓ In Watchlist" : "+ Watchlist"}
               </button>
-              <button className="border border-white/40 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 sm:text-sm">
+              <button
+                onClick={handleShare}
+                className="border border-white/40 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10 sm:text-sm cursor-pointer"
+              >
                 Share
               </button>
             </div>
