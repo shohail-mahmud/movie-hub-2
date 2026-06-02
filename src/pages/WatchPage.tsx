@@ -62,6 +62,13 @@ export const STREAM_SOURCES: StreamSource[] = [
     getMovieUrl: (id) => `https://embed.su/embed/movie/${id}`,
     getTvUrl: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`,
     description: "Subtitles Backup"
+  },
+  {
+    id: "smashystream",
+    name: "SmashyStream",
+    getMovieUrl: (id) => `https://embed.smashystream.com/play/movie/${id}`,
+    getTvUrl: (id, s, e) => `https://embed.smashystream.com/play/tv/${id}/${s}/${e}`,
+    description: "Dual Audio / Hindi"
   }
 ];
 
