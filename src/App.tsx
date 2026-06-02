@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Movie, Actor } from "@/api/tmdb";
 import Header, { SearchCategory } from "@/components/Header";
 import HomePage from "@/pages/HomePage";
@@ -39,6 +39,28 @@ export default function App() {
   const [homeScroll, setHomeScroll] = useState<"actors" | "categories" | null>(null);
   const [navTick, setNavTick] = useState(0);
   const [activeNav, setActiveNav] = useState<string>("home");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const movieParam = params.get("movie");
+    const watchParam = params.get("watch");
+    const typeParam = params.get("type");
+
+    if (watchParam) {
+      setView({
+        type: "watch",
+        id: Number(watchParam),
+        mediaType: typeParam === "tv" ? "tv" : "movie"
+      });
+    } else if (movieParam) {
+      setView({
+        type: "movie",
+        id: Number(movieParam)
+      });
+    }
+  }, []);
 
   const navigate = (next: View) => {
     setHistory((h) => [...h, view]);
