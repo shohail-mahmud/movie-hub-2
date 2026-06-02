@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Movie, Actor } from "@/api/tmdb";
+import { toast } from "sonner";
 import Header, { SearchCategory } from "@/components/Header";
 import HomePage from "@/pages/HomePage";
 import ActorPage from "@/pages/ActorPage";
@@ -39,6 +40,32 @@ export default function App() {
   const [homeScroll, setHomeScroll] = useState<"actors" | "categories" | null>(null);
   const [navTick, setNavTick] = useState(0);
   const [activeNav, setActiveNav] = useState<string>("home");
+  const [showSharePopup, setShowSharePopup] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const siteUrl = "https://movie-hub-2.nirjonpc.workers.dev/";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Show popup once per session after a random delay (between 10s and 30s)
+    const sessionDismissed = sessionStorage.getItem("share_popup_dismissed");
+    if (sessionDismissed === "true") return;
+
+    const randomDelay = Math.floor(Math.random() * (30000 - 10000 + 1)) + 10000;
+
+    const timer = setTimeout(() => {
+      setShowSharePopup(true);
+    }, randomDelay);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(siteUrl);
+    setCopied(true);
+    toast.success("Link copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -260,6 +287,126 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Share Pop-up Modal */}
+      {showSharePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md scale-100 rounded-lg border border-neutral-800 bg-neutral-900 p-6 shadow-2xl transition-all duration-300 animate-in zoom-in-95 duration-200">
+            {/* Close Cross */}
+            <button
+              onClick={() => {
+                setShowSharePopup(false);
+                sessionStorage.setItem("share_popup_dismissed", "true");
+              }}
+              className="absolute top-4 right-4 text-neutral-400 transition hover:text-white cursor-pointer"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4">
+                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+
+            {/* Icon & Title */}
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 shadow-inner animate-pulse">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="currentColor" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">Enjoying MovieHub? 🍿</h2>
+              <p className="mt-2 text-xs leading-relaxed text-neutral-400 sm:text-sm">
+                If you like our free, ad-free streaming experience, please share it with others! Your support keeps us alive and kicking.
+              </p>
+            </div>
+
+            {/* Input Link copy */}
+            <div className="mt-6 flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={siteUrl}
+                className="flex-1 rounded-md border border-neutral-800 bg-black/60 px-3 py-2 text-xs text-neutral-300 outline-none focus:border-amber-500"
+              />
+              <button
+                onClick={handleCopyLink}
+                className={`rounded-md px-4 py-2 text-xs font-bold transition duration-200 cursor-pointer ${
+                  copied
+                    ? "bg-emerald-500 text-white"
+                    : "bg-amber-500 text-black hover:bg-amber-400"
+                }`}
+              >
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            </div>
+
+            {/* Social Icons row */}
+            <div className="mt-6">
+              <p className="text-center text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Quick Share</p>
+              <div className="mt-3 flex justify-center gap-3">
+                {/* WhatsApp */}
+                <a
+                  href={`https://api.whatsapp.com/send?text=Check out MovieHub! Watch thousands of movies and TV shows for free in HD without ads: ${siteUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-neutral-950 text-neutral-400 transition hover:border-emerald-500 hover:text-emerald-500 hover:scale-105"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+
+                {/* Telegram */}
+                <a
+                  href={`https://t.me/share/url?url=${siteUrl}&text=Check out MovieHub! Watch thousands of movies and TV shows for free in HD without ads!`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-neutral-950 text-neutral-400 transition hover:border-sky-500 hover:text-sky-500 hover:scale-105"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+
+                {/* Facebook */}
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${siteUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-neutral-950 text-neutral-400 transition hover:border-blue-600 hover:text-blue-600 hover:scale-105"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+
+                {/* Twitter / X */}
+                <a
+                  href={`https://twitter.com/intent/tweet?text=Check out MovieHub! Watch thousands of movies and TV shows for free in HD without ads:&url=${siteUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 bg-neutral-950 text-neutral-400 transition hover:border-neutral-200 hover:text-white hover:scale-105"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+                    <path d="M4 4l11.733 16h4.267l-11.733 -16zM4 20l6.768 -6.768M20 4l-6.768 6.768" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Skip/Later options */}
+            <div className="mt-6 flex justify-center border-t border-neutral-800/60 pt-4">
+              <button
+                onClick={() => {
+                  setShowSharePopup(false);
+                  sessionStorage.setItem("share_popup_dismissed", "true");
+                }}
+                className="text-xs font-semibold text-neutral-500 hover:text-neutral-300 transition cursor-pointer"
+              >
+                Later / Skip
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
