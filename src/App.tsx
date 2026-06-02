@@ -218,9 +218,9 @@ export default function App() {
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.vidking.net/" target="_blank" rel="noreferrer" className="hover:text-amber-400">
-                    Vidking <span className="text-neutral-600">— streaming</span>
-                  </a>
+                  <span className="text-neutral-400">
+                    Video Players <span className="text-neutral-600">— multi-server backup</span>
+                  </span>
                 </li>
                 <li className="text-neutral-500">React + TanStack + Tailwind</li>
               </ul>
@@ -281,7 +281,7 @@ function AboutPage({ onBack }: { onBack: () => void }) {
         <h2 className="mb-3 border-l-4 border-amber-500 pl-3 text-xl font-bold">APIs we use</h2>
         <ul className="mb-8 space-y-2 text-sm text-neutral-300">
           <li><a className="text-amber-400 hover:underline" href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">TMDB</a> — all movie, series, and actor metadata, posters, and ratings</li>
-          <li><a className="text-amber-400 hover:underline" href="https://www.vidking.net/" target="_blank" rel="noreferrer">Vidking</a> — embedded streaming player</li>
+          <li><span className="text-amber-400">Multi-Source Players</span> — integrated video streaming servers with automatic backup support (including VidKing, VidLink, VidSrc, and more)</li>
         </ul>
 
         <div className="my-8 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
