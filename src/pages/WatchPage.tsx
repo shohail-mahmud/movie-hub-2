@@ -111,10 +111,14 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
   const isTv = mediaType === "tv";
 
   const handleShare = () => {
+    const shareUrl = typeof window !== "undefined"
+      ? `${window.location.origin}${window.location.pathname}?watch=${movieId}${isTv ? "&type=tv" : ""}`
+      : "";
+
     const shareData = {
       title: data?.title ?? "MovieHub",
       text: `Watch ${data?.title} for free on MovieHub!`,
-      url: typeof window !== "undefined" ? window.location.href : "",
+      url: shareUrl,
     };
 
     if (typeof navigator !== "undefined" && navigator.share && navigator.canShare && navigator.canShare(shareData)) {
@@ -122,12 +126,12 @@ export default function WatchPage({ movieId, mediaType = "movie", onBack, onActo
         .then(() => toast.success("Shared successfully!"))
         .catch((err) => {
           if (err.name !== "AbortError") {
-            navigator.clipboard.writeText(window.location.href);
+            navigator.clipboard.writeText(shareUrl);
             toast.success("Link copied to clipboard!");
           }
         });
     } else if (typeof navigator !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(shareUrl);
       toast.success("Link copied to clipboard!");
     }
   };
